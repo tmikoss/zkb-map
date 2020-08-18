@@ -2,7 +2,8 @@ const yaml = require('js-yaml')
 const glob = require('glob')
 const fs = require('fs')
 
-const COORDINATE_SCALE_FACTOR = 1_000_000_000_000_000
+const COORDINATE_PRECISION_FACTOR = 1_000_000
+const COORDINATE_SCALE_FACTOR = 1_000_000_000_000_000 / COORDINATE_PRECISION_FACTOR
 
 const nameFile = fs.readFileSync('./sde/bsd/invNames.yaml', 'utf8')
 const nameJson = yaml.safeLoad(nameFile)
@@ -13,7 +14,7 @@ let names = nameJson.reduce((lookup, item) => {
   return lookup
 }, {})
 
-const normalize = (n) => Math.round(n / COORDINATE_SCALE_FACTOR)
+const normalize = (n) => Math.round(n / COORDINATE_SCALE_FACTOR) / COORDINATE_PRECISION_FACTOR
 
 glob('./sde/fsd/universe/eve/**/solarsystem.staticdata', (err, files) => {
   if (err) {

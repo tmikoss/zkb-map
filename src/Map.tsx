@@ -88,7 +88,7 @@ const Map: React.FC<{
 }> = ({ solarSystems, scales }) => {
   return <Canvas
     gl={{ antialias: false, alpha: false }}
-    camera={{ position: [0, 1000, 0], near: 1, far: 10_000 }}
+    camera={{ position: [0, 1_000, 0], near: 1, far: 10_000 }}
     onCreated={({ gl }) => gl.setClearColor('pink')}>
     <Stars solarSystems={solarSystems} scales={scales} />
   </Canvas>

@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react'
 import { useKillmails } from './useKillmails'
 import { useSolarSystems } from './useSolarSytems'
 import Map from './Map'
+import KillmailEntry from './KillmailEntry'
 
 const App: React.FC<{}> = () => {
   const sourceUrl = 'wss://zkillboard.com/websocket/'
@@ -20,11 +21,9 @@ const App: React.FC<{}> = () => {
 
   return <>
     <div style={{height: 500}}>
-      <Map solarSystems={solarSystems} scales={scales} />
+      {solarSystems.length > 0 && <Map solarSystems={solarSystems} scales={scales} />}
     </div>
-    <pre>
-      {JSON.stringify(killmails, null, 2)}
-    </pre>
+    {killmails.map(km => <KillmailEntry killmail={km} key={km.id} />)}
   </>
 }
 
