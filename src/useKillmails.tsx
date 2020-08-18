@@ -38,7 +38,7 @@ interface WebsocketKillmail {
   }
 }
 
-interface Killmail {
+export interface Killmail {
   id: number
   time: Date
   receivedAt: Date
@@ -105,7 +105,7 @@ export function useKillmails(props: { sourceUrl: string }): Killmail[] {
     const connection = new WebSocket(sourceUrl)
 
     connection.onopen = () => {
-      // connection.send(SUBSCRIBE_MESSAGE)
+      connection.send(SUBSCRIBE_MESSAGE)
     }
 
     connection.onmessage = (e) => {

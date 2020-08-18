@@ -2,7 +2,7 @@ const yaml = require('js-yaml')
 const glob = require('glob')
 const fs = require('fs')
 
-const COORDINATE_SCALE_FACTOR = 1_000_000_000
+const COORDINATE_SCALE_FACTOR = 1_000_000_000_000_000
 
 const nameFile = fs.readFileSync('./sde/bsd/invNames.yaml', 'utf8')
 const nameJson = yaml.safeLoad(nameFile)
@@ -38,6 +38,6 @@ glob('./sde/fsd/universe/eve/**/solarsystem.staticdata', (err, files) => {
     }
   }
 
-  fs.writeFileSync('./public/solarSystems.json', JSON.stringify(systems))
+  fs.writeFileSync('./public/data/solarSystems.json', JSON.stringify(systems))
 })
 
