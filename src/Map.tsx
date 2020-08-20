@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { Canvas, useFrame } from 'react-three-fiber'
 import { SolarSystem } from './useSolarSytems'
 import * as THREE from 'three'
-import { Killmail } from './useKillmails'
+import { CameraControls } from './CameraControls'
 
 // const colors = new Array(1000).fill().map(() => niceColors[17][Math.floor(Math.random() * 5)])
 
@@ -88,9 +88,10 @@ const Map: React.FC<{
 }> = ({ solarSystems, scales }) => {
   return <Canvas
     gl={{ antialias: false, alpha: false }}
-    camera={{ position: [0, 1_000, 0], near: 1, far: 10_000 }}
+    camera={{ position: [0, 0, 1_000], near: 1, far: 10_000 }}
     onCreated={({ gl }) => gl.setClearColor('pink')}>
     <Stars solarSystems={solarSystems} scales={scales} />
+    <CameraControls />
   </Canvas>
 }
 
