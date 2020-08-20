@@ -19,7 +19,7 @@ interface WebsocketKillmail {
   victim: {
     alliance_id?: number
     character_id: number
-    corporation_id?: number
+    corporation_id: number
     ship_type_id: number
     position: {
       x: number,
@@ -43,11 +43,12 @@ export interface Killmail {
   time: Date
   receivedAt: Date
   characterId: number
-  corporationId?: number
+  corporationId: number
   allianceId?: number
   shipTypeId: number
   solarSystemId: number
   url: string
+  totalValue: number
 }
 
 type ReceiveWebsocketAction = {
@@ -78,10 +79,11 @@ function reduceKillmails(state: Killmail[], action: KillmailAction): Killmail[] 
         allianceId: victim.alliance_id,
         shipTypeId: victim.ship_type_id,
         solarSystemId: solar_system_id,
-        url: zkb.url
+        url: zkb.url,
+        totalValue: zkb.totalValue
       }
 
-      return [...state, killmail]
+      return [killmail, ...state]
     }
     case 'DECAY': {
       const now = new Date()
