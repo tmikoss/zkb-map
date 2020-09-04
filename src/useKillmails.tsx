@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from 'react'
 import parseISO from 'date-fns/parseISO'
 import differenceInSeconds from 'date-fns/differenceInSeconds'
+import uniqBy from 'lodash/uniqBy'
 
 const SUBSCRIBE_MESSAGE = JSON.stringify({
   "action": "sub",
@@ -63,7 +64,7 @@ type DecayAction = {
 type KillmailAction = ReceiveWebsocketAction | DecayAction
 
 function reduceKillmails(state: Killmail[], action: KillmailAction): Killmail[] {
-  console.log(action)
+  // console.log(action)
   switch (action.type) {
     case 'RECEIVE_WEBSOCKET': {
       const { killmail_id, killmail_time, victim, solar_system_id, zkb } = action.payload
@@ -83,7 +84,7 @@ function reduceKillmails(state: Killmail[], action: KillmailAction): Killmail[] 
         totalValue: zkb.totalValue
       }
 
-      return [killmail, ...state]
+      return uniqBy([killmail, ...state], 'id')
     }
     case 'DECAY': {
       const now = new Date()

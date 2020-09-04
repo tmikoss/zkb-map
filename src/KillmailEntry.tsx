@@ -31,8 +31,8 @@ const KillmailEntry: React.FC<{
   const { characterId, corporationId, allianceId } = killmail
 
   return <Container>
-    <Image src={`https://images.evetech.net/characters/${characterId}/portrait`} area='character' size={UNIT * 2} />
-    <Image src={`https://images.evetech.net/corporations/${corporationId}/logo`} area='corporation' size={UNIT} />
+    {characterId && <Image src={`https://images.evetech.net/characters/${characterId}/portrait`} area='character' size={UNIT * 2} />}
+    {corporationId && <Image src={`https://images.evetech.net/corporations/${corporationId}/logo`} area='corporation' size={UNIT} />}
     {allianceId && <Image src={`https://images.evetech.net/alliances/${allianceId}/logo`} area='alliance' size={UNIT} />}
     <Data>
       {JSON.stringify(killmail, null, 2)}

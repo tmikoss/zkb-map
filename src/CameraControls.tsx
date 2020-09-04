@@ -1,7 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { Canvas, useFrame, extend, useThree } from 'react-three-fiber'
-import { SolarSystem } from './useSolarSytems'
-import * as THREE from 'three'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 extend({ OrbitControls })

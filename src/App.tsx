@@ -8,20 +8,15 @@ const App: React.FC<{}> = () => {
   const sourceUrl = 'wss://zkillboard.com/websocket/'
   const killmails = useKillmails({ sourceUrl })
   const solarSystems = useSolarSystems()
-  const scales = useRef({})
+  const killmailsRef = useRef<typeof killmails>([])
 
   useEffect(() => {
-    const conflictScale = killmails.reduce((hash, killmail) => {
-      const { solarSystemId } = killmail
-      hash[solarSystemId] = ((hash[solarSystemId] || 0) + 10) * 2
-      return hash
-    }, {} as Record<number, number>)
-    scales.current = conflictScale
+    killmailsRef.current = killmails
   }, [killmails])
 
   return <>
-    <div style={{height: 500}}>
-      {solarSystems.length > 0 && <Map solarSystems={solarSystems} scales={scales} />}
+    <div style={{height: 600}}>
+      {solarSystems.length > 0 && <Map solarSystems={solarSystems} killmails={killmailsRef} />}
     </div>
     {killmails.map(km => <KillmailEntry killmail={km} key={km.id} />)}
   </>
