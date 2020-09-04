@@ -7,6 +7,8 @@ import glow from './glow.png'
 import { Killmail } from './useKillmails'
 import keyBy from 'lodash/keyBy'
 import { Dictionary } from 'lodash'
+import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
+import { scaleValue, ageMultiplier } from './calculations'
 
 const VERTEX_SHADER = `
   attribute float size;
@@ -120,13 +122,13 @@ const Indicators: React.FC<{
 
     const flares: Dictionary<number> = {}
 
+    const now = new Date()
+
     for (let index = 0; index < killmails.current.length; index++) {
-      const { receivedAt, solarSystemId, totalValue } = killmails.current[index]
+      const { receivedAt, solarSystemId, scaledValue } = killmails.current[index]
 
-      const timeMultiplier = 100.1
-      const valueMultiplier = 1.1
-
-      const value = 1 * timeMultiplier * valueMultiplier
+      const age = differenceInMilliseconds(now, receivedAt)
+      const value = scaledValue * ageMultiplier(age)
 
       flares[solarSystemId] = (flares[solarSystemId] || 0) + value
     }
@@ -171,10 +173,7 @@ const Map: React.FC<{
   solarSystems: SolarSystem[]
   killmails: React.MutableRefObject<Killmail[]>
 }> = ({ solarSystems, killmails }) => {
-  return <Canvas
-    gl={{ antialias: false, alpha: false }}
-    camera={{ position: [0, 0, 1_000], near: 1, far: 10_000 }}
-    onCreated={({ gl }) => gl.setClearColor(backgroundColor)}>
+  return <Canvas camera={{ position: [0, 0, 1_000], near: 0.001, far: 10_000 }} onCreated={({ gl }) => gl.setClearColor(backgroundColor)}>
     <Stars solarSystems={solarSystems} />
     <Indicators solarSystems={solarSystems} killmails={killmails} />
     <CameraControls />
