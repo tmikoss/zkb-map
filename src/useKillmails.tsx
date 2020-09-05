@@ -2,14 +2,14 @@ import { useEffect, useReducer } from 'react'
 import parseISO from 'date-fns/parseISO'
 import differenceInSeconds from 'date-fns/differenceInSeconds'
 import uniqBy from 'lodash/uniqBy'
+import { scaleValue, MAX_KILLMAIL_AGE_SEC } from './calculations'
 
-const SUBSCRIBE_MESSAGE = JSON.stringify({
+const subscribeMessage = JSON.stringify({
   "action": "sub",
   "channel": "killstream"
 })
 
-const MAX_KILLMAIL_AGE_SEC = 60
-const DECAY_INTERVAL_MS = 10 * 1000
+const decayIntervalMs = 10 * 1000
 
 type UnparsedTimestamp = string
 
@@ -50,6 +50,7 @@ export interface Killmail {
   solarSystemId: number
   url: string
   totalValue: number
+  scaledValue: number
 }
 
 type ReceiveWebsocketAction = {
@@ -81,7 +82,8 @@ function reduceKillmails(state: Killmail[], action: KillmailAction): Killmail[] 
         shipTypeId: victim.ship_type_id,
         solarSystemId: solar_system_id,
         url: zkb.url,
-        totalValue: zkb.totalValue
+        totalValue: zkb.totalValue,
+        scaledValue: scaleValue(zkb.totalValue)
       }
 
       return uniqBy([killmail, ...state], 'id')
@@ -100,7 +102,7 @@ export function useKillmails(props: { sourceUrl: string }): Killmail[] {
   const [killmails, dispatch] = useReducer(reduceKillmails, [])
 
   useEffect(() => {
-    const interval = setInterval(() => dispatch({ type: 'DECAY' }), DECAY_INTERVAL_MS)
+    const interval = setInterval(() => dispatch({ type: 'DECAY' }), decayIntervalMs)
     return () => clearInterval(interval)
   }, [dispatch])
 
@@ -108,7 +110,7 @@ export function useKillmails(props: { sourceUrl: string }): Killmail[] {
     const connection = new WebSocket(sourceUrl)
 
     connection.onopen = () => {
-      connection.send(SUBSCRIBE_MESSAGE)
+      connection.send(subscribeMessage)
     }
 
     connection.onmessage = (e) => {
