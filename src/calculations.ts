@@ -1,18 +1,25 @@
-import clamp from 'lodash/clamp'
+import * as THREE from 'three'
 
-const MAX_KILLMAIL_AGE_SEC = 60
-const MAX_AGE_MSEC = MAX_KILLMAIL_AGE_SEC * 1000
-const DECAY_SPEED = 4
+export const MAX_KILLMAIL_AGE_SEC = 60
+
+const fullyVisibleMs = 500
+const fullyInvisibleMs = MAX_KILLMAIL_AGE_SEC * 1000
 
 export const ageMultiplier = (age: number): number => {
-  const remaining = MAX_AGE_MSEC - age
-  return Math.pow(remaining / 10_000, DECAY_SPEED)
+  if (age < fullyVisibleMs) {
+    return THREE.MathUtils.smoothstep(age, 0, fullyVisibleMs)
+  } else {
+    const t = THREE.MathUtils.smoothstep(age, fullyVisibleMs, fullyInvisibleMs) - 1
+    return Math.pow(t, 4)
+  }
 }
 
-const MIN_VALUE = 1_000_000
-const MAX_VALUE = 100_000_000_000
+const minValueBound = 10_000
+const maxValueBound = 100_000_000_000
+const minValueMultiplier = 0.5
+const maxValueMultiplier = 5
 
 export const scaleValue = (value: number): number => {
-  const clamped = clamp(value, MIN_VALUE, MAX_VALUE) / MIN_VALUE
-  return Math.pow(clamped, 1/5)
+  const normalized = THREE.MathUtils.clamp(value, minValueBound, maxValueBound)
+  return THREE.MathUtils.mapLinear(normalized, minValueBound, maxValueBound, minValueMultiplier, maxValueMultiplier)
 }

@@ -28,9 +28,10 @@ const Image: React.FC<{
 const KillmailEntry: React.FC<{
   killmail: Killmail
 }> = ({ killmail }) => {
-  const { characterId, corporationId, allianceId, totalValue, scaledValue } = killmail
+  const { characterId, corporationId, allianceId, totalValue, scaledValue, shipTypeId } = killmail
 
   return <Container>
+    {shipTypeId && <Image src={`https://images.evetech.net/types/${shipTypeId}/render`} area='ship' size={UNIT * 2} />}
     {characterId && <Image src={`https://images.evetech.net/characters/${characterId}/portrait`} area='character' size={UNIT * 2} />}
     {corporationId && <Image src={`https://images.evetech.net/corporations/${corporationId}/logo`} area='corporation' size={UNIT} />}
     {allianceId && <Image src={`https://images.evetech.net/alliances/${allianceId}/logo`} area='alliance' size={UNIT} />}
