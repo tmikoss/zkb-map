@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useMemo } from 'react'
 import { useKillmails } from './useKillmails'
 import { useSolarSystems } from './useSolarSytems'
 import { createGlobalStyle } from 'styled-components'
@@ -10,6 +10,8 @@ import { theme, ThemeContext } from './utils/theme'
 import Stars from './Stars'
 import Flares from './Flares'
 import { Stats } from 'drei'
+import keyBy from 'lodash/keyBy'
+import KillmailTicker from './KillmailTicker'
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -17,11 +19,12 @@ const GlobalStyle = createGlobalStyle`
   #root {
     height: 100vh;
     background: ${theme.background};
+    overflow: hidden;
   }
 `
 
 const cameraConfig  = {
-  position: new THREE.Vector3(0, -1_000, 0),
+  position: new THREE.Vector3(0, 0, 1_000),
   near: 0.001,
   far: 10_000
 }
@@ -32,6 +35,8 @@ const App: React.FC<{}> = () => {
   const solarSystems = useSolarSystems()
   const killmailsRef = useRef<typeof killmails>([])
 
+  const solarSystemLookup = useMemo(() => keyBy(solarSystems, 'id'), [solarSystems])
+
   useEffect(() => {
     killmailsRef.current = killmails
   }, [killmails])
@@ -40,15 +45,17 @@ const App: React.FC<{}> = () => {
     <GlobalStyle />
 
     <Canvas camera={cameraConfig} onCreated={({ gl }) => gl.setClearColor(theme.background)}>
-      <Stats />
+      {/* <Stats /> */}
 
       <ambientLight />
 
       <Stars solarSystems={solarSystems} />
-      <Flares solarSystems={solarSystems} killmails={killmailsRef} />
+      <Flares solarSystems={solarSystemLookup} killmails={killmailsRef} />
 
       <CameraControls />
     </Canvas>
+
+    <KillmailTicker killmails={killmails} solarSystems={solarSystemLookup} />
   </ThemeContext.Provider>
 }
 

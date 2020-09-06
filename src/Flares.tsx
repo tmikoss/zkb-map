@@ -1,9 +1,8 @@
-import React, { useMemo, useRef, useContext } from 'react'
+import React, { useRef, useContext } from 'react'
 import { useFrame } from 'react-three-fiber'
 import { SolarSystem } from './useSolarSytems'
 import * as THREE from 'three'
 import { Killmail } from './useKillmails'
-import keyBy from 'lodash/keyBy'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import { ageMultiplier } from './utils/scaling'
 import { buildAttributes, setAttributes, positionToArray } from './utils/geometry'
@@ -14,14 +13,12 @@ const baseFlareSize = 150
 const maxFlareSize = 1000
 
 const Flares: React.FC<{
-  solarSystems: SolarSystem[]
+  solarSystems: Record<string, SolarSystem>
   killmails: React.MutableRefObject<Killmail[]>
 }> = ({ solarSystems, killmails }) => {
   const pointsRef = useRef<THREE.Points>()
 
   const theme = useContext(ThemeContext)
-
-  const solarSystemLookup = useMemo(() => keyBy(solarSystems, 'id'), [solarSystems])
 
   useFrame(() => {
     if (!killmails.current || !pointsRef.current) {
@@ -50,7 +47,7 @@ const Flares: React.FC<{
 
     for (let index = 0; index < count; index++) {
       const solarSystemId = systemsWithKills[index]
-      const solarSystem = solarSystemLookup[solarSystemId] || {}
+      const solarSystem = solarSystems[solarSystemId] || {}
 
       positionToArray(solarSystem, positions, index)
 
