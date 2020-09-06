@@ -7,14 +7,14 @@ import reset from 'styled-reset'
 import { Canvas } from 'react-three-fiber'
 import * as THREE from 'three'
 import { CameraControls } from './CameraControls'
-import { useTheme } from 'styled-components'
+import { theme, ThemeContext } from './utils/theme'
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
 
   #root {
     height: 100vh;
-    background: ${({ theme }) => theme.background};
+    background: ${theme.background};
   }
 `
 
@@ -34,9 +34,7 @@ const App: React.FC<{}> = () => {
     killmailsRef.current = killmails
   }, [killmails])
 
-  const theme = useTheme()
-
-  return <>
+  return <ThemeContext.Provider value={theme}>
     <GlobalStyle />
 
     <Canvas camera={cameraConfig} onCreated={({ gl }) => gl.setClearColor(theme.background)}>
@@ -46,7 +44,7 @@ const App: React.FC<{}> = () => {
 
       <CameraControls />
     </Canvas>
-  </>
+  </ThemeContext.Provider>
 }
 
 export default App;

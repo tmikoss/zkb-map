@@ -19,7 +19,7 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
     "react-three-fiber": "^4.2.20",
-    "styled-components": "^5.1.1",
+    "styled-components": "^5.2.0",
     "styled-reset": "^4.2.2",
     "three": "^0.119.1",
     "typescript": "~3.7.2"

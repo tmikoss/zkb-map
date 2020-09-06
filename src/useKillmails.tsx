@@ -2,7 +2,7 @@ import { useEffect, useReducer } from 'react'
 import parseISO from 'date-fns/parseISO'
 import differenceInSeconds from 'date-fns/differenceInSeconds'
 import uniqBy from 'lodash/uniqBy'
-import { scaleValue, MAX_KILLMAIL_AGE_SEC } from './calculations'
+import { scaleValue, MAX_KILLMAIL_AGE_SEC } from './utils/scaling'
 
 const subscribeMessage = JSON.stringify({
   "action": "sub",

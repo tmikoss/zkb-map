@@ -1,100 +1,32 @@
-import React, { useMemo, useRef, useLayoutEffect, forwardRef } from 'react'
+import React, { useMemo, useRef, useLayoutEffect, useContext } from 'react'
 import { useFrame } from 'react-three-fiber'
 import { SolarSystem } from './useSolarSytems'
 import * as THREE from 'three'
-import glow from './glow.png'
 import { Killmail } from './useKillmails'
 import keyBy from 'lodash/keyBy'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
-import { ageMultiplier } from './calculations'
-
-const VERTEX_SHADER = `
-  attribute float size;
-  attribute vec3 flareColor;
-
-  varying vec3 vColor;
-
-  void main() {
-    vColor = flareColor;
-    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-    gl_PointSize = size * (300.0 / -mvPosition.z);
-    gl_Position = projectionMatrix * mvPosition;
-  }
-`
-
-const FRAGMENT_SHADER = `
-  uniform vec3 color;
-  uniform sampler2D pointTexture;
-
-  varying vec3 vColor;
-
-  void main() {
-    gl_FragColor = vec4(color * vColor, 1.0);
-    gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
-  }
-`
-
-const flareTexture = THREE.ImageUtils.loadTexture(glow)
-
-const uniforms = {
-  color: { value: new THREE.Color() },
-  pointTexture: { value: flareTexture }
-}
+import { ageMultiplier } from './utils/scaling'
+import { buildAttributes, setAttributes, positionToArray } from './utils/geometry'
+import Points from './Points'
+import { ThemeContext } from './utils/theme'
 
 const systemSize = 5
 const baseFlareSize = 150
 const maxFlareSize = 1000
-
-const colorMaxSec = new THREE.Color('#2A9FD6')
-const colorMinSec = new THREE.Color('#E6E6E6')
-const colorFlare = new THREE.Color('#E60000')
-
-const Points = forwardRef((_props, ref) => <points ref={ref as any}>
-  <bufferGeometry attach="geometry" />
-  <shaderMaterial
-    uniforms={uniforms}
-    vertexShader={VERTEX_SHADER}
-    fragmentShader={FRAGMENT_SHADER}
-    blending={THREE.AdditiveBlending}
-    depthTest={false}
-    transparent={true}
-    attach='material'
-  />
-</points>)
-
-const buildAttributes = (count: number) => ({
-  positions: new Float32Array(count * 3),
-  colors: new Float32Array(count * 3),
-  scales: new Float32Array(count)
-})
-
-const setAttributes = (geometry: THREE.BufferGeometry, positions: Float32Array, colors: Float32Array, scales: Float32Array) => {
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-  geometry.setAttribute('flareColor', new THREE.BufferAttribute(colors, 3))
-  geometry.setAttribute('size', new THREE.BufferAttribute(scales, 1))
-
-  geometry.attributes.position.needsUpdate = true
-  geometry.attributes.flareColor.needsUpdate = true
-  geometry.attributes.size.needsUpdate = true
-}
-
-const tempVector = new THREE.Vector3()
-const vectorize = ({ x, y, z}: { x: number, y: number, z: number }) => {
-  tempVector.x = x
-  tempVector.y = y
-  tempVector.z = z
-  return tempVector
-}
 
 const Stars: React.FC<{
   solarSystems: SolarSystem[]
 }> = ({ solarSystems }) => {
   const pointsRef = useRef<THREE.Points>()
 
+  const theme = useContext(ThemeContext)
+
   useLayoutEffect(() => {
-    if (!pointsRef.current) {
+    if (!pointsRef.current || !theme) {
       return
     }
+
+    const colorMaxSec = new THREE.Color(theme.colorMaxSec)
 
     const count = solarSystems.length
 
@@ -103,15 +35,15 @@ const Stars: React.FC<{
     for (let index = 0; index < count; index++) {
       const solarSystem = solarSystems[index]
 
-      vectorize(solarSystem).toArray(positions, index * 3)
+      positionToArray(solarSystem, positions, index)
 
-      colorMinSec.clone().lerp(colorMaxSec, solarSystem.security).toArray(colors, index * 3)
+      new THREE.Color(theme.colorMinSec).lerp(colorMaxSec, solarSystem.security).toArray(colors, index * 3)
 
       scales[index] = systemSize
     }
 
     setAttributes(pointsRef.current.geometry as THREE.BufferGeometry, positions, colors, scales)
-  }, [solarSystems.length])
+  }, [solarSystems, solarSystems.length, theme])
 
   return <Points ref={pointsRef} />
 }
@@ -121,6 +53,8 @@ const Indicators: React.FC<{
   killmails: React.MutableRefObject<Killmail[]>
 }> = ({ solarSystems, killmails }) => {
   const pointsRef = useRef<THREE.Points>()
+
+  const theme = useContext(ThemeContext)
 
   const solarSystemLookup = useMemo(() => keyBy(solarSystems, 'id'), [solarSystems])
 
@@ -147,11 +81,13 @@ const Indicators: React.FC<{
 
     const { positions, colors, scales } = buildAttributes(count)
 
+    const colorFlare = new THREE.Color(theme.flare)
+
     for (let index = 0; index < count; index++) {
       const solarSystemId = systemsWithKills[index]
       const solarSystem = solarSystemLookup[solarSystemId] || {}
 
-      vectorize(solarSystem).toArray(positions, index * 3)
+      positionToArray(solarSystem, positions, index)
 
       colorFlare.toArray(colors, index * 3)
       scales[index] = flares[solarSystemId]
