@@ -10,7 +10,8 @@ const UNIT = 32
 
 // 50%, because MAX_KILLMAIL_AGE_SEC is not a guaranteed removal
 const fade = keyframes`
-  0% { opacity: 1; }
+  0% { opacity: 0; }
+  0.5% { opacity: 1; }
   10% { opacity: 0.9; }
   50% { opacity: 0; }
   100% { opacity: 0; }
