@@ -28,8 +28,8 @@ export function useSolarSystems(): SolarSystem[] {
         return {
           id: parseInt(id),
           x,
-          y: z,
-          z: y, // transform top-down view to frontal
+          y,
+          z,
           name: n,
           radius: r,
           security: s

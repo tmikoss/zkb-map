@@ -22,7 +22,7 @@ const Image: React.FC<{
   area: string
   size: number
 }> = ({ src, area, size }) => {
-  return <img src={`${src}?size=${size}`} style={{ height: size, width: size, gridArea: area }} />
+  return <img src={`${src}?size=${size}`} style={{ height: size, width: size, gridArea: area }} alt={src} />
 }
 
 const KillmailEntry: React.FC<{

@@ -2,7 +2,17 @@ import React, { useRef, useEffect } from 'react'
 import { useKillmails } from './useKillmails'
 import { useSolarSystems } from './useSolarSytems'
 import Map from './Map'
-import KillmailEntry from './KillmailEntry'
+import { createGlobalStyle } from 'styled-components'
+import reset from 'styled-reset'
+
+const GlobalStyle = createGlobalStyle`
+  ${reset}
+
+  #root {
+    height: 100vh;
+    background: ${({ theme }) => theme.background};
+  }
+`
 
 const App: React.FC<{}> = () => {
   const sourceUrl = 'wss://zkillboard.com/websocket/'
@@ -15,10 +25,8 @@ const App: React.FC<{}> = () => {
   }, [killmails])
 
   return <>
-    <div style={{height: 600}}>
-      {solarSystems.length > 0 && <Map solarSystems={solarSystems} killmails={killmailsRef} />}
-    </div>
-    {killmails.map(km => <KillmailEntry killmail={km} key={km.id} />)}
+    <GlobalStyle />
+    <Map solarSystems={solarSystems} killmails={killmailsRef} />
   </>
 }
 

@@ -9,6 +9,7 @@ import keyBy from 'lodash/keyBy'
 import { Dictionary } from 'lodash'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import { ageMultiplier } from './calculations'
+import { useTheme } from 'styled-components'
 
 const VERTEX_SHADER = `
   attribute float size;
@@ -43,14 +44,13 @@ const uniforms = {
   pointTexture: { value: flareTexture }
 }
 
-const systemSize = 4
+const systemSize = 5
 const baseFlareSize = 150
 const maxFlareSize = 1000
 
 const colorMaxSec = new THREE.Color('#2A9FD6')
 const colorMinSec = new THREE.Color('#E6E6E6')
 const colorFlare = new THREE.Color('#E60000')
-const backgroundColor = '#060606'
 
 const Points = forwardRef((_props, ref) => <points ref={ref as any}>
   <bufferGeometry attach="geometry" />
@@ -170,8 +170,10 @@ const Map: React.FC<{
   solarSystems: SolarSystem[]
   killmails: React.MutableRefObject<Killmail[]>
 }> = ({ solarSystems, killmails }) => {
-  return <Canvas camera={{ position: [0, 0, 1_000], near: 0.001, far: 10_000 }} onCreated={({ gl }) => gl.setClearColor(backgroundColor)}>
-    <Stars solarSystems={solarSystems} />
+  const theme = useTheme()
+
+  return <Canvas camera={{ position: [0, -1_000, 0], near: 0.001, far: 10_000 }} onCreated={({ gl }) => gl.setClearColor(theme.background)}>
+    <Stars solarSystems={solarSystems} key={solarSystems.length} />
     <Indicators solarSystems={solarSystems} killmails={killmails} />
     <CameraControls />
     <ambientLight />
