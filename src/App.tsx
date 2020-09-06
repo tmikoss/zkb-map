@@ -1,13 +1,14 @@
 import React, { useRef, useEffect } from 'react'
 import { useKillmails } from './useKillmails'
 import { useSolarSystems } from './useSolarSytems'
-import Map from './Map'
 import { createGlobalStyle } from 'styled-components'
 import reset from 'styled-reset'
 import { Canvas } from 'react-three-fiber'
 import * as THREE from 'three'
 import { CameraControls } from './CameraControls'
 import { theme, ThemeContext } from './utils/theme'
+import Stars from './Stars'
+import Flares from './Flares'
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -40,7 +41,8 @@ const App: React.FC<{}> = () => {
     <Canvas camera={cameraConfig} onCreated={({ gl }) => gl.setClearColor(theme.background)}>
       <ambientLight />
 
-      <Map solarSystems={solarSystems} killmails={killmailsRef} />
+      <Stars solarSystems={solarSystems} />
+      <Flares solarSystems={solarSystems} killmails={killmailsRef} />
 
       <CameraControls />
     </Canvas>

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useLayoutEffect, useContext } from 'react'
+import React, { useMemo, useRef, useContext } from 'react'
 import { useFrame } from 'react-three-fiber'
 import { SolarSystem } from './useSolarSytems'
 import * as THREE from 'three'
@@ -10,45 +10,10 @@ import { buildAttributes, setAttributes, positionToArray } from './utils/geometr
 import Points from './Points'
 import { ThemeContext } from './utils/theme'
 
-const systemSize = 5
 const baseFlareSize = 150
 const maxFlareSize = 1000
 
-const Stars: React.FC<{
-  solarSystems: SolarSystem[]
-}> = ({ solarSystems }) => {
-  const pointsRef = useRef<THREE.Points>()
-
-  const theme = useContext(ThemeContext)
-
-  useLayoutEffect(() => {
-    if (!pointsRef.current || !theme) {
-      return
-    }
-
-    const colorMaxSec = new THREE.Color(theme.colorMaxSec)
-
-    const count = solarSystems.length
-
-    const { positions, colors, scales } = buildAttributes(count)
-
-    for (let index = 0; index < count; index++) {
-      const solarSystem = solarSystems[index]
-
-      positionToArray(solarSystem, positions, index)
-
-      new THREE.Color(theme.colorMinSec).lerp(colorMaxSec, solarSystem.security).toArray(colors, index * 3)
-
-      scales[index] = systemSize
-    }
-
-    setAttributes(pointsRef.current.geometry as THREE.BufferGeometry, positions, colors, scales)
-  }, [solarSystems, solarSystems.length, theme])
-
-  return <Points ref={pointsRef} />
-}
-
-const Indicators: React.FC<{
+const Flares: React.FC<{
   solarSystems: SolarSystem[]
   killmails: React.MutableRefObject<Killmail[]>
 }> = ({ solarSystems, killmails }) => {
@@ -99,15 +64,4 @@ const Indicators: React.FC<{
   return <Points ref={pointsRef} />
 }
 
-const Map: React.FC<{
-  solarSystems: SolarSystem[]
-  killmails: React.MutableRefObject<Killmail[]>
-}> = ({ solarSystems, killmails }) => {
-
-  return <>
-    <Stars solarSystems={solarSystems} />
-    <Indicators solarSystems={solarSystems} killmails={killmails} />
-  </>
-}
-
-export default React.memo(Map)
+export default React.memo(Flares)
