@@ -4,6 +4,10 @@ import { useSolarSystems } from './useSolarSytems'
 import Map from './Map'
 import { createGlobalStyle } from 'styled-components'
 import reset from 'styled-reset'
+import { Canvas } from 'react-three-fiber'
+import * as THREE from 'three'
+import { CameraControls } from './CameraControls'
+import { useTheme } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -13,6 +17,12 @@ const GlobalStyle = createGlobalStyle`
     background: ${({ theme }) => theme.background};
   }
 `
+
+const cameraConfig  = {
+  position: new THREE.Vector3(0, -1_000, 0),
+  near: 0.001,
+  far: 10_000
+}
 
 const App: React.FC<{}> = () => {
   const sourceUrl = 'wss://zkillboard.com/websocket/'
@@ -24,9 +34,18 @@ const App: React.FC<{}> = () => {
     killmailsRef.current = killmails
   }, [killmails])
 
+  const theme = useTheme()
+
   return <>
     <GlobalStyle />
-    <Map solarSystems={solarSystems} killmails={killmailsRef} />
+
+    <Canvas camera={cameraConfig} onCreated={({ gl }) => gl.setClearColor(theme.background)}>
+      <ambientLight />
+
+      <Map solarSystems={solarSystems} killmails={killmailsRef} />
+
+      <CameraControls />
+    </Canvas>
   </>
 }
 

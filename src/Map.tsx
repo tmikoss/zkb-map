@@ -1,15 +1,12 @@
 import React, { useMemo, useRef, useLayoutEffect, forwardRef } from 'react'
-import { Canvas, useFrame } from 'react-three-fiber'
+import { useFrame } from 'react-three-fiber'
 import { SolarSystem } from './useSolarSytems'
 import * as THREE from 'three'
-import { CameraControls } from './CameraControls'
 import glow from './glow.png'
 import { Killmail } from './useKillmails'
 import keyBy from 'lodash/keyBy'
-import { Dictionary } from 'lodash'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import { ageMultiplier } from './calculations'
-import { useTheme } from 'styled-components'
 
 const VERTEX_SHADER = `
   attribute float size;
@@ -114,7 +111,7 @@ const Stars: React.FC<{
     }
 
     setAttributes(pointsRef.current.geometry as THREE.BufferGeometry, positions, colors, scales)
-  }, [solarSystems])
+  }, [solarSystems.length])
 
   return <Points ref={pointsRef} />
 }
@@ -132,7 +129,7 @@ const Indicators: React.FC<{
       return
     }
 
-    const flares: Dictionary<number> = {}
+    const flares: Record<string, number> = {}
 
     const now = new Date()
 
@@ -170,14 +167,11 @@ const Map: React.FC<{
   solarSystems: SolarSystem[]
   killmails: React.MutableRefObject<Killmail[]>
 }> = ({ solarSystems, killmails }) => {
-  const theme = useTheme()
 
-  return <Canvas camera={{ position: [0, -1_000, 0], near: 0.001, far: 10_000 }} onCreated={({ gl }) => gl.setClearColor(theme.background)}>
-    <Stars solarSystems={solarSystems} key={solarSystems.length} />
+  return <>
+    <Stars solarSystems={solarSystems} />
     <Indicators solarSystems={solarSystems} killmails={killmails} />
-    <CameraControls />
-    <ambientLight />
-  </Canvas>
+  </>
 }
 
 export default React.memo(Map)
