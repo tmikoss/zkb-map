@@ -9,6 +9,7 @@ import { CameraControls } from './CameraControls'
 import { theme, ThemeContext } from './utils/theme'
 import Stars from './Stars'
 import Flares from './Flares'
+import { Stats } from 'drei'
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -39,6 +40,8 @@ const App: React.FC<{}> = () => {
     <GlobalStyle />
 
     <Canvas camera={cameraConfig} onCreated={({ gl }) => gl.setClearColor(theme.background)}>
+      <Stats />
+
       <ambientLight />
 
       <Stars solarSystems={solarSystems} />
