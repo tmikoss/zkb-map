@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useKillmails } from './useKillmails'
 import { useSolarSystems } from './useSolarSytems'
 import { createGlobalStyle } from 'styled-components'
@@ -10,8 +10,8 @@ import { theme, ThemeContext } from './utils/theme'
 import Stars from './Stars'
 import Flares from './Flares'
 import { Stats } from 'drei'
-import keyBy from 'lodash/keyBy'
 import KillmailTicker from './KillmailTicker'
+import { useAppSelector } from './store'
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -30,12 +30,14 @@ const cameraConfig  = {
 }
 
 const App: React.FC<{}> = () => {
+  useSolarSystems()
+
   const sourceUrl = 'wss://zkillboard.com/websocket/'
   const killmails = useKillmails({ sourceUrl })
-  const solarSystems = useSolarSystems()
+
   const killmailsRef = useRef<typeof killmails>([])
 
-  const solarSystemLookup = useMemo(() => keyBy(solarSystems, 'id'), [solarSystems])
+  const solarSystems = useAppSelector(state => state.solarSystems)
 
   useEffect(() => {
     killmailsRef.current = killmails
@@ -50,12 +52,12 @@ const App: React.FC<{}> = () => {
       <ambientLight />
 
       <Stars solarSystems={solarSystems} />
-      <Flares solarSystems={solarSystemLookup} killmails={killmailsRef} />
+      <Flares solarSystems={solarSystems} killmails={killmailsRef} />
 
       <CameraControls />
     </Canvas>
 
-    <KillmailTicker killmails={killmails} solarSystems={solarSystemLookup} />
+    <KillmailTicker killmails={killmails} solarSystems={solarSystems} />
   </ThemeContext.Provider>
 }
 

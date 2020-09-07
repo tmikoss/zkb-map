@@ -1,14 +1,6 @@
 import { useEffect, useState } from 'react'
-
-export interface SolarSystem {
-  id: number
-  name: string
-  x: number
-  y: number
-  z: number
-  radius: number
-  security: number
-}
+import { useAppDispatch } from './store'
+import { solarSystemsLoaded } from './store/solarSystems'
 
 interface RawSolarSystem {
   x: number
@@ -19,8 +11,8 @@ interface RawSolarSystem {
   n: string
 }
 
-export function useSolarSystems(): SolarSystem[] {
-  const [solarSystems, setSolarSystems] = useState<SolarSystem[]>([])
+export function useSolarSystems() {
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     fetch('data/solarSystems.json').then(res => res.json()).then((data: Record<string, RawSolarSystem>) => {
@@ -36,9 +28,7 @@ export function useSolarSystems(): SolarSystem[] {
         } as SolarSystem
       })
 
-      setSolarSystems(solarSystems)
+      dispatch(solarSystemsLoaded(solarSystems))
     })
-  }, [])
-
-  return solarSystems
+  }, [dispatch])
 }

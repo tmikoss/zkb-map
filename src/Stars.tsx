@@ -1,5 +1,4 @@
 import React, { useRef, useLayoutEffect, useContext } from 'react'
-import { SolarSystem } from './useSolarSytems'
 import * as THREE from 'three'
 import { buildAttributes, setAttributes, positionToArray } from './utils/geometry'
 import Points from './Points'
@@ -9,7 +8,7 @@ import { useMinViewportSize } from './utils/scaling'
 const viewportRelativeScale = 90
 
 const Stars: React.FC<{
-  solarSystems: SolarSystem[]
+  solarSystems: Record<string, SolarSystem>
 }> = ({ solarSystems }) => {
   const pointsRef = useRef<THREE.Points>()
 
@@ -23,15 +22,16 @@ const Stars: React.FC<{
     }
 
     const colorMaxSec = new THREE.Color(theme.colorMaxSec)
+    const solarSystemArray = Object.values(solarSystems)
 
-    const count = solarSystems.length
+    const count = solarSystemArray.length
 
     const systemSize = minViewportSize / viewportRelativeScale
 
     const { positions, colors, scales } = buildAttributes(count)
 
     for (let index = 0; index < count; index++) {
-      const solarSystem = solarSystems[index]
+      const solarSystem = solarSystemArray[index]
 
       positionToArray(solarSystem, positions, index)
 
@@ -41,7 +41,7 @@ const Stars: React.FC<{
     }
 
     setAttributes(pointsRef.current.geometry as THREE.BufferGeometry, positions, colors, scales)
-  }, [solarSystems, solarSystems.length, theme, minViewportSize])
+  }, [solarSystems, theme, minViewportSize])
 
   return <Points ref={pointsRef} />
 }

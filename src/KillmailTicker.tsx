@@ -1,7 +1,6 @@
 import React from 'react'
 import { Killmail } from './useKillmails'
 import styled, { keyframes } from 'styled-components'
-import { SolarSystem } from './useSolarSytems'
 import { theme } from './utils/theme'
 import { MAX_KILLMAIL_AGE_SEC } from './utils/scaling'
 import { stringifyPrice } from './utils/formatting'
