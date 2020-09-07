@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { useThree } from 'react-three-fiber'
 
 export const MAX_KILLMAIL_AGE_SEC = 60
 
@@ -22,4 +23,12 @@ const maxValueMultiplier = 5
 export const scaleValue = (value: number): number => {
   const normalized = THREE.MathUtils.clamp(value, minValueBound, maxValueBound)
   return THREE.MathUtils.mapLinear(normalized, minValueBound, maxValueBound, minValueMultiplier, maxValueMultiplier)
+}
+
+export const useMinViewportSize = () => {
+  const { size: { height, width } } = useThree()
+
+  const minSize = Math.min(height, width)
+
+  return minSize
 }

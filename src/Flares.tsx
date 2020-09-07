@@ -4,13 +4,10 @@ import { SolarSystem } from './useSolarSytems'
 import * as THREE from 'three'
 import { Killmail } from './useKillmails'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
-import { ageMultiplier } from './utils/scaling'
+import { ageMultiplier, useMinViewportSize } from './utils/scaling'
 import { buildAttributes, setAttributes, positionToArray } from './utils/geometry'
 import Points from './Points'
 import { ThemeContext } from './utils/theme'
-
-const baseFlareSize = 150
-const maxFlareSize = 1000
 
 const Flares: React.FC<{
   solarSystems: Record<string, SolarSystem>
@@ -20,6 +17,8 @@ const Flares: React.FC<{
 
   const theme = useContext(ThemeContext)
 
+  const minViewportSize = useMinViewportSize()
+
   useFrame(() => {
     if (!killmails.current || !pointsRef.current) {
       return
@@ -28,6 +27,8 @@ const Flares: React.FC<{
     const flares: Record<string, number> = {}
 
     const now = new Date()
+    const baseFlareSize = minViewportSize / 5
+    const maxFlareSize = baseFlareSize * 6
 
     for (let index = 0; index < killmails.current.length; index++) {
       const { receivedAt, solarSystemId, scaledValue } = killmails.current[index]

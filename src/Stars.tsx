@@ -4,8 +4,9 @@ import * as THREE from 'three'
 import { buildAttributes, setAttributes, positionToArray } from './utils/geometry'
 import Points from './Points'
 import { ThemeContext } from './utils/theme'
+import { useMinViewportSize } from './utils/scaling'
 
-const systemSize = 5
+const viewportRelativeScale = 90
 
 const Stars: React.FC<{
   solarSystems: SolarSystem[]
@@ -13,6 +14,8 @@ const Stars: React.FC<{
   const pointsRef = useRef<THREE.Points>()
 
   const theme = useContext(ThemeContext)
+
+  const minViewportSize = useMinViewportSize()
 
   useLayoutEffect(() => {
     if (!pointsRef.current) {
@@ -22,6 +25,8 @@ const Stars: React.FC<{
     const colorMaxSec = new THREE.Color(theme.colorMaxSec)
 
     const count = solarSystems.length
+
+    const systemSize = minViewportSize / viewportRelativeScale
 
     const { positions, colors, scales } = buildAttributes(count)
 
@@ -36,7 +41,7 @@ const Stars: React.FC<{
     }
 
     setAttributes(pointsRef.current.geometry as THREE.BufferGeometry, positions, colors, scales)
-  }, [solarSystems, solarSystems.length, theme])
+  }, [solarSystems, solarSystems.length, theme, minViewportSize])
 
   return <Points ref={pointsRef} />
 }
