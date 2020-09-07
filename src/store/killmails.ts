@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import pickBy from 'lodash/pickBy'
+import subSeconds from 'date-fns/subSeconds'
 
 const slice = createSlice({
   name: 'killmails',
@@ -9,8 +10,9 @@ const slice = createSlice({
       const killmail = action.payload
       state[killmail.id] = killmail
     },
-    trimKillmailsBefore: (state, action: PayloadAction<Date>) => {
-      return pickBy(state, killmail => killmail.receivedAt > action.payload)
+    trimKillmailsBefore: (state, action: PayloadAction<number>) => {
+      const oldest = subSeconds(new Date(), action.payload)
+      return pickBy(state, killmail => killmail.receivedAt > oldest)
     }
   }
 })

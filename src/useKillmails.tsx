@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import parseISO from 'date-fns/parseISO'
-import subSeconds from 'date-fns/subSeconds'
 import { scaleValue, MAX_KILLMAIL_AGE_SEC } from './utils/scaling'
 import { useAppDispatch, receiveKillmail, trimKillmailsBefore } from './store'
 
@@ -62,7 +61,7 @@ export function useKillmails(sourceUrl: string): void {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      dispatch(trimKillmailsBefore(subSeconds(new Date(), MAX_KILLMAIL_AGE_SEC)))
+      dispatch(trimKillmailsBefore(MAX_KILLMAIL_AGE_SEC))
     }, decayIntervalMs)
     return () => clearInterval(interval)
   }, [dispatch])

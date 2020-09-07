@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { useSelector, useDispatch, TypedUseSelectorHook } from 'react-redux'
 import { combineReducers } from 'redux'
 
@@ -8,7 +8,14 @@ import killmails from './killmails'
 const rootReducer = combineReducers({ solarSystems, killmails })
 
 const store = configureStore({
-  reducer: rootReducer
+  reducer: rootReducer,
+  middleware: getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActionPaths: ['payload.time', 'payload.receivedAt'],
+      ignoredPaths: ['killmails']
+    },
+    immutableCheck: false
+  })
 })
 
 type AppDispatch = typeof store.dispatch

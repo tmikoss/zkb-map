@@ -25,7 +25,7 @@ const Flares: React.FC<{
     const count = killmails.current.length
 
     const now = new Date()
-    const baseFlareSize = minViewportSize / 5
+    const baseFlareSize = minViewportSize / 8
     const colorFlare = new THREE.Color(theme.flare)
 
     const { positions, colors, scales } = buildAttributes(count)

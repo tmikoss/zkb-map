@@ -1,9 +1,10 @@
-import React, { useRef, useLayoutEffect, useContext } from 'react'
+import React, { useRef, useContext } from 'react'
 import * as THREE from 'three'
 import { buildAttributes, setAttributes, positionToArray } from './utils/geometry'
 import Points from './Points'
 import { ThemeContext } from './utils/theme'
 import { useMinViewportSize } from './utils/scaling'
+import { useFrame } from 'react-three-fiber'
 
 const viewportRelativeScale = 90
 
@@ -16,7 +17,7 @@ const Stars: React.FC<{
 
   const minViewportSize = useMinViewportSize()
 
-  useLayoutEffect(() => {
+  useFrame(() => {
     if (!pointsRef.current) {
       return
     }
@@ -41,7 +42,7 @@ const Stars: React.FC<{
     }
 
     setAttributes(pointsRef.current.geometry as THREE.BufferGeometry, positions, colors, scales)
-  }, [solarSystems, theme, minViewportSize])
+  })
 
   return <Points ref={pointsRef} />
 }

@@ -16,9 +16,9 @@ export const ageMultiplier = (age: number): number => {
 }
 
 const minValueBound = 10_000
-const maxValueBound = 100_000_000_000
-const minValueMultiplier = 0.5
-const maxValueMultiplier = 15
+const maxValueBound = 10_000_000_000
+const minValueMultiplier = 1
+const maxValueMultiplier = 10
 
 export const scaleValue = (value: number): number => {
   const normalized = THREE.MathUtils.clamp(value, minValueBound, maxValueBound)

@@ -8,9 +8,11 @@ import { CameraControls } from './CameraControls'
 import { theme, ThemeContext } from './utils/theme'
 import Stars from './Stars'
 import Flares from './Flares'
-import { Stats } from 'drei'
 import KillmailTicker from './KillmailTicker'
 import { useAppSelector, fetchSolarSystems, useAppDispatch } from './store'
+import DevTools from './DevTools'
+
+const devMode = process.env.NODE_ENV === 'development'
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -51,8 +53,6 @@ const App: React.FC<{}> = () => {
     <GlobalStyle />
 
     <Canvas camera={cameraConfig} onCreated={({ gl }) => gl.setClearColor(theme.background)}>
-      {/* <Stats /> */}
-
       <ambientLight />
 
       <Stars solarSystems={solarSystems} />
@@ -62,6 +62,7 @@ const App: React.FC<{}> = () => {
     </Canvas>
 
     <KillmailTicker killmails={killmails} solarSystems={solarSystems} />
+    {devMode && <DevTools />}
   </ThemeContext.Provider>
 }
 

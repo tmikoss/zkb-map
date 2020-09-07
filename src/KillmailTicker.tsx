@@ -64,6 +64,10 @@ const KillmailEntry: React.FC<{
   killmail: Killmail
   solarSystem: SolarSystem
 }> = ({ killmail, solarSystem }) => {
+  if (!solarSystem) {
+    return null
+  }
+
   const { name } = solarSystem
   const { characterId, corporationId, allianceId, shipTypeId, totalValue, url } = killmail
 
@@ -107,7 +111,7 @@ const KillmailTicker: React.FC<{
     const { id, solarSystemId } = km
     const solarSystem = solarSystems[solarSystemId]
 
-    return solarSystem ? <KillmailEntry killmail={km} solarSystem={solarSystem} key={id} /> : null
+    return <KillmailEntry killmail={km} solarSystem={solarSystem} key={id} />
   })
 
   return <TickerContainer>
