@@ -24,36 +24,25 @@ const Flares: React.FC<{
       return
     }
 
-    const flares: Record<string, number> = {}
+    const count = killmails.current.length
 
     const now = new Date()
     const baseFlareSize = minViewportSize / 5
-    const maxFlareSize = baseFlareSize * 6
+    const colorFlare = new THREE.Color(theme.flare)
+
+    const { positions, colors, scales } = buildAttributes(count)
 
     for (let index = 0; index < killmails.current.length; index++) {
       const { receivedAt, solarSystemId, scaledValue } = killmails.current[index]
 
-      const age = differenceInMilliseconds(now, receivedAt)
-      const value = baseFlareSize * scaledValue * ageMultiplier(age)
-
-      flares[solarSystemId] = THREE.MathUtils.clamp((flares[solarSystemId] || 0) + value, 0, maxFlareSize)
-    }
-
-    const systemsWithKills = Object.keys(flares)
-    const count = systemsWithKills.length
-
-    const { positions, colors, scales } = buildAttributes(count)
-
-    const colorFlare = new THREE.Color(theme.flare)
-
-    for (let index = 0; index < count; index++) {
-      const solarSystemId = systemsWithKills[index]
       const solarSystem = solarSystems[solarSystemId] || {}
+
+      const age = differenceInMilliseconds(now, receivedAt)
+      scales[index] = baseFlareSize * scaledValue * ageMultiplier(age)
 
       positionToArray(solarSystem, positions, index)
 
       colorFlare.toArray(colors, index * 3)
-      scales[index] = flares[solarSystemId]
     }
 
     setAttributes(pointsRef.current.geometry as THREE.BufferGeometry, positions, colors, scales)
