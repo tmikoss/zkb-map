@@ -1,7 +1,6 @@
 import React, { useRef, useContext } from 'react'
 import { useFrame } from 'react-three-fiber'
 import * as THREE from 'three'
-import { Killmail } from './useKillmails'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import { ageMultiplier, useMinViewportSize } from './utils/scaling'
 import { buildAttributes, setAttributes, positionToArray } from './utils/geometry'

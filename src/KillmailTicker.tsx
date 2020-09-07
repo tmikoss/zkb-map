@@ -1,9 +1,10 @@
 import React from 'react'
-import { Killmail } from './useKillmails'
 import styled, { keyframes } from 'styled-components'
 import { theme } from './utils/theme'
 import { MAX_KILLMAIL_AGE_SEC } from './utils/scaling'
 import { stringifyPrice } from './utils/formatting'
+import values from 'lodash/values'
+import sortBy from 'lodash/sortBy'
 
 const UNIT = 32
 
@@ -99,10 +100,10 @@ const KillmailEntry: React.FC<{
 }
 
 const KillmailTicker: React.FC<{
-  killmails: Killmail[]
-  solarSystems: Record<number, SolarSystem>
+  killmails: Record<string, Killmail>
+  solarSystems: Record<string, SolarSystem>
 }> = ({ killmails, solarSystems }) => {
-  const entries = killmails.map(km => {
+  const entries = sortBy(values(killmails), 'receivedAt').reverse().map(km => {
     const { id, solarSystemId } = km
     const solarSystem = solarSystems[solarSystemId]
 

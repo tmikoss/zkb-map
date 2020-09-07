@@ -7,3 +7,17 @@ interface SolarSystem {
   radius: number
   security: number
 }
+
+interface Killmail {
+  id: number
+  time: Date
+  receivedAt: Date
+  characterId: number
+  corporationId: number
+  allianceId?: number
+  shipTypeId: number
+  solarSystemId: number
+  url: string
+  totalValue: number
+  scaledValue: number
+}

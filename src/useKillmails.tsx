@@ -1,8 +1,8 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect } from 'react'
 import parseISO from 'date-fns/parseISO'
-import differenceInSeconds from 'date-fns/differenceInSeconds'
-import uniqBy from 'lodash/uniqBy'
+import subSeconds from 'date-fns/subSeconds'
 import { scaleValue, MAX_KILLMAIL_AGE_SEC } from './utils/scaling'
+import { useAppDispatch, receiveKillmail, trimKillmailsBefore } from './store'
 
 const subscribeMessage = JSON.stringify({
   "action": "sub",
@@ -11,11 +11,9 @@ const subscribeMessage = JSON.stringify({
 
 const decayIntervalMs = 10 * 1000
 
-type UnparsedTimestamp = string
-
 interface WebsocketKillmail {
   killmail_id: number
-  killmail_time: UnparsedTimestamp
+  killmail_time: string
   solar_system_id: number
   victim: {
     alliance_id?: number
@@ -39,70 +37,33 @@ interface WebsocketKillmail {
   }
 }
 
-export interface Killmail {
-  id: number
-  time: Date
-  receivedAt: Date
-  characterId: number
-  corporationId: number
-  allianceId?: number
-  shipTypeId: number
-  solarSystemId: number
-  url: string
-  totalValue: number
-  scaledValue: number
-}
+const parseWebsocketKillmail = (raw: WebsocketKillmail): Killmail => {
+  const { killmail_id, killmail_time, victim, solar_system_id, zkb } = raw
 
-type ReceiveWebsocketAction = {
-  type: 'RECEIVE_WEBSOCKET'
-  payload: WebsocketKillmail
-}
+  const time = parseISO(killmail_time)
 
-type DecayAction = {
-  type: 'DECAY'
-}
-
-type KillmailAction = ReceiveWebsocketAction | DecayAction
-
-function reduceKillmails(state: Killmail[], action: KillmailAction): Killmail[] {
-  // console.log(action)
-  switch (action.type) {
-    case 'RECEIVE_WEBSOCKET': {
-      const { killmail_id, killmail_time, victim, solar_system_id, zkb } = action.payload
-
-      const time = parseISO(killmail_time)
-
-      const killmail: Killmail = {
-        id: killmail_id,
-        time,
-        receivedAt: new Date(),
-        characterId: victim.character_id,
-        corporationId: victim.corporation_id,
-        allianceId: victim.alliance_id,
-        shipTypeId: victim.ship_type_id,
-        solarSystemId: solar_system_id,
-        url: zkb.url,
-        totalValue: zkb.totalValue,
-        scaledValue: scaleValue(zkb.totalValue)
-      }
-
-      return uniqBy([killmail, ...state], 'id')
-    }
-    case 'DECAY': {
-      const now = new Date()
-      return state.filter(killmail => differenceInSeconds(now, killmail.receivedAt) < MAX_KILLMAIL_AGE_SEC)
-    }
-    default:
-      return state
+  return {
+    id: killmail_id,
+    time,
+    receivedAt: new Date(),
+    characterId: victim.character_id,
+    corporationId: victim.corporation_id,
+    allianceId: victim.alliance_id,
+    shipTypeId: victim.ship_type_id,
+    solarSystemId: solar_system_id,
+    url: zkb.url,
+    totalValue: zkb.totalValue,
+    scaledValue: scaleValue(zkb.totalValue)
   }
 }
 
-export function useKillmails(props: { sourceUrl: string }): Killmail[] {
-  const { sourceUrl } = props
-  const [killmails, dispatch] = useReducer(reduceKillmails, [])
+export function useKillmails(sourceUrl: string): void {
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
-    const interval = setInterval(() => dispatch({ type: 'DECAY' }), decayIntervalMs)
+    const interval = setInterval(() => {
+      dispatch(trimKillmailsBefore(subSeconds(new Date(), MAX_KILLMAIL_AGE_SEC)))
+    }, decayIntervalMs)
     return () => clearInterval(interval)
   }, [dispatch])
 
@@ -114,12 +75,13 @@ export function useKillmails(props: { sourceUrl: string }): Killmail[] {
     }
 
     connection.onmessage = (e) => {
-      const killmail: WebsocketKillmail = JSON.parse(e.data)
-      dispatch({ type: 'RECEIVE_WEBSOCKET', payload: killmail })
+      dispatch(
+        receiveKillmail(
+          parseWebsocketKillmail(JSON.parse(e.data))
+        )
+      )
     }
 
     return () => connection.close()
   }, [sourceUrl, dispatch])
-
-  return killmails
 }

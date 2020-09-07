@@ -31,19 +31,20 @@ const cameraConfig  = {
 const App: React.FC<{}> = () => {
   const dispatch = useAppDispatch()
 
+  const sourceUrl = 'wss://zkillboard.com/websocket/'
+  useKillmails(sourceUrl)
+
   useEffect(() => {
     dispatch(fetchSolarSystems())
   }, [dispatch])
 
-  const sourceUrl = 'wss://zkillboard.com/websocket/'
-  const killmails = useKillmails({ sourceUrl })
-
-  const killmailsRef = useRef<typeof killmails>([])
+  const killmailsRef = useRef<Killmail[]>([])
 
   const solarSystems = useAppSelector(state => state.solarSystems)
+  const killmails = useAppSelector(state => state.killmails)
 
   useEffect(() => {
-    killmailsRef.current = killmails
+    killmailsRef.current = Object.values(killmails)
   }, [killmails])
 
   return <ThemeContext.Provider value={theme}>
