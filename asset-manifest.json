@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.js": "https://tmikoss.github.io/zkb-map/static/js/main.22635c4e.chunk.js",
-    "main.js.map": "https://tmikoss.github.io/zkb-map/static/js/main.22635c4e.chunk.js.map",
+    "main.js": "https://tmikoss.github.io/zkb-map/static/js/main.027aaed6.chunk.js",
+    "main.js.map": "https://tmikoss.github.io/zkb-map/static/js/main.027aaed6.chunk.js.map",
     "runtime-main.js": "https://tmikoss.github.io/zkb-map/static/js/runtime-main.69cbe273.js",
     "runtime-main.js.map": "https://tmikoss.github.io/zkb-map/static/js/runtime-main.69cbe273.js.map",
-    "static/js/2.47679d4a.chunk.js": "https://tmikoss.github.io/zkb-map/static/js/2.47679d4a.chunk.js",
-    "static/js/2.47679d4a.chunk.js.map": "https://tmikoss.github.io/zkb-map/static/js/2.47679d4a.chunk.js.map",
+    "static/js/2.b0e23a4e.chunk.js": "https://tmikoss.github.io/zkb-map/static/js/2.b0e23a4e.chunk.js",
+    "static/js/2.b0e23a4e.chunk.js.map": "https://tmikoss.github.io/zkb-map/static/js/2.b0e23a4e.chunk.js.map",
     "index.html": "https://tmikoss.github.io/zkb-map/index.html",
-    "precache-manifest.f5636b2ba9437dd87bc78a4aba081d59.js": "https://tmikoss.github.io/zkb-map/precache-manifest.f5636b2ba9437dd87bc78a4aba081d59.js",
+    "precache-manifest.158865643f0dd1bd32d9e61760706c3c.js": "https://tmikoss.github.io/zkb-map/precache-manifest.158865643f0dd1bd32d9e61760706c3c.js",
     "service-worker.js": "https://tmikoss.github.io/zkb-map/service-worker.js",
-    "static/js/2.47679d4a.chunk.js.LICENSE.txt": "https://tmikoss.github.io/zkb-map/static/js/2.47679d4a.chunk.js.LICENSE.txt",
+    "static/js/2.b0e23a4e.chunk.js.LICENSE.txt": "https://tmikoss.github.io/zkb-map/static/js/2.b0e23a4e.chunk.js.LICENSE.txt",
     "static/media/glow.png": "https://tmikoss.github.io/zkb-map/static/media/glow.3b6b0c75.png"
   },
   "entrypoints": [
     "static/js/runtime-main.69cbe273.js",
-    "static/js/2.47679d4a.chunk.js",
-    "static/js/main.22635c4e.chunk.js"
+    "static/js/2.b0e23a4e.chunk.js",
+    "static/js/main.027aaed6.chunk.js"
   ]
 }
