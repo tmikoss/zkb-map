@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react'
 import { useKillmails } from './useKillmails'
-import { useSolarSystems } from './useSolarSytems'
 import { createGlobalStyle } from 'styled-components'
 import reset from 'styled-reset'
 import { Canvas } from 'react-three-fiber'
@@ -11,7 +10,7 @@ import Stars from './Stars'
 import Flares from './Flares'
 import { Stats } from 'drei'
 import KillmailTicker from './KillmailTicker'
-import { useAppSelector } from './store'
+import { useAppSelector, fetchSolarSystems, useAppDispatch } from './store'
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -30,7 +29,11 @@ const cameraConfig  = {
 }
 
 const App: React.FC<{}> = () => {
-  useSolarSystems()
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(fetchSolarSystems())
+  }, [dispatch])
 
   const sourceUrl = 'wss://zkillboard.com/websocket/'
   const killmails = useKillmails({ sourceUrl })

@@ -3,6 +3,7 @@ import { useSelector, useDispatch, TypedUseSelectorHook } from 'react-redux'
 import { combineReducers } from 'redux'
 
 import solarSystems from './solarSystems'
+export { fetchSolarSystems } from './solarSystems'
 
 const rootReducer = combineReducers({ solarSystems })
 
