@@ -22,6 +22,10 @@ const GlobalStyle = createGlobalStyle`
     background: ${theme.background};
     overflow: hidden;
   }
+
+  canvas {
+    outline: 0;
+  }
 `
 
 const cameraConfig  = {
