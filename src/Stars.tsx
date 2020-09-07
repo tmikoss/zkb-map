@@ -6,7 +6,7 @@ import { ThemeContext } from './utils/theme'
 import { useMinViewportSize } from './utils/scaling'
 import { useFrame } from 'react-three-fiber'
 
-const viewportRelativeScale = 90
+const viewportRelativeScale = 75
 
 const Stars: React.FC<{
   solarSystems: Record<string, SolarSystem>
@@ -38,7 +38,7 @@ const Stars: React.FC<{
 
       new THREE.Color(theme.colorMinSec).lerp(colorMaxSec, solarSystem.security).toArray(colors, index * 3)
 
-      scales[index] = systemSize
+      scales[index] = systemSize * solarSystem.radius
     }
 
     setAttributes(pointsRef.current.geometry as THREE.BufferGeometry, positions, colors, scales)

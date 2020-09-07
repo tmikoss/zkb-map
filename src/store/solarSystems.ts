@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import each from 'lodash/each'
+import map from 'lodash/map'
+import clamp from 'lodash/clamp'
 
 interface RawSolarSystem {
   x: number
@@ -36,7 +38,7 @@ const slice = createSlice({
           y: z,
           z: y,
           name: n,
-          radius: r,
+          radius: clamp(r * 100, 0.75, 1.25),
           security: s
         }
       })
