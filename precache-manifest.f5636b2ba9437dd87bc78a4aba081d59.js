@@ -1,19 +1,19 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "04bdf5f155047272c0920df462566fc7",
+    "revision": "501fbb69e73ecc9da0ff01814becb987",
     "url": "https://tmikoss.github.io/zkb-map/index.html"
   },
   {
-    "revision": "389d1b51f42e9ed0ff09",
-    "url": "https://tmikoss.github.io/zkb-map/static/js/2.596d624b.chunk.js"
+    "revision": "919a178ac7f036201ffe",
+    "url": "https://tmikoss.github.io/zkb-map/static/js/2.47679d4a.chunk.js"
   },
   {
     "revision": "6e900953f82e75bb7ccced89e6806918",
-    "url": "https://tmikoss.github.io/zkb-map/static/js/2.596d624b.chunk.js.LICENSE.txt"
+    "url": "https://tmikoss.github.io/zkb-map/static/js/2.47679d4a.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "12daea10f82d2ca1f99e",
-    "url": "https://tmikoss.github.io/zkb-map/static/js/main.801a1cc6.chunk.js"
+    "revision": "6f084941f059f31f70cd",
+    "url": "https://tmikoss.github.io/zkb-map/static/js/main.22635c4e.chunk.js"
   },
   {
     "revision": "b516728e5cd5ea9555d5",

@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "https://tmikoss.github.io/zkb-map/precache-manifest.50e37cb1097c2cbae3dc059ddeea52c4.js"
+  "https://tmikoss.github.io/zkb-map/precache-manifest.f5636b2ba9437dd87bc78a4aba081d59.js"
 );
 
 self.addEventListener('message', (event) => {
