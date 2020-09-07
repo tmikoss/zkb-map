@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import each from 'lodash/each'
-import map from 'lodash/map'
 import clamp from 'lodash/clamp'
 
 interface RawSolarSystem {
