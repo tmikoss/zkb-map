@@ -12,3 +12,4 @@ yarn-error.log*
 .dockerignore
 .gitignore
 Dockerfile
+heroku.yml
