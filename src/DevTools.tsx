@@ -92,7 +92,13 @@ const DevTools: React.FC<{}> = () => {
     }
   }, [oneSystemFightOn, dispatch, randomSolarSystemId, activityInterval])
 
+  const connected = useAppSelector(state => state.connection.connected)
+
   return <Container>
+    <div>
+      conenction = {connected ? 'OK' : '-'}
+    </div>
+
     <label>
       <input type='checkbox' checked={statsOn} onChange={() => setStatsOn(!statsOn)} />
       Show FPS

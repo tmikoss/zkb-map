@@ -11,6 +11,7 @@ import Flares from './Flares'
 import KillmailTicker from './KillmailTicker'
 import { useAppSelector, fetchSolarSystems, useAppDispatch } from './store'
 import DevTools from './DevTools'
+import { useConnectionStatus } from './useConnectionStatus'
 
 const devMode = process.env.NODE_ENV === 'development'
 
@@ -39,6 +40,8 @@ const App: React.FC<{}> = () => {
 
   const sourceUrl = 'wss://zkillboard.com/websocket/'
   useKillmails(sourceUrl)
+
+  useConnectionStatus()
 
   useEffect(() => {
     dispatch(fetchSolarSystems())

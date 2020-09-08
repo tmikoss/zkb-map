@@ -4,16 +4,14 @@ import { combineReducers } from 'redux'
 
 import solarSystems from './solarSystems'
 import killmails from './killmails'
+import connection from './connection'
 
-const rootReducer = combineReducers({ solarSystems, killmails })
+const rootReducer = combineReducers({ solarSystems, killmails, connection })
 
 const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware({
-    serializableCheck: {
-      ignoredActionPaths: ['payload.time', 'payload.receivedAt'],
-      ignoredPaths: ['killmails']
-    },
+    serializableCheck: false,
     immutableCheck: false
   })
 })
@@ -26,5 +24,6 @@ export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector
 
 export { fetchSolarSystems } from './solarSystems'
 export { receiveKillmail, trimKillmailsBefore } from './killmails'
+export { receivePing, checkConnection } from './connection'
 
 export default store
