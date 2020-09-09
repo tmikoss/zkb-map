@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import parseISO from 'date-fns/parseISO'
 import { scaleValue, MAX_KILLMAIL_AGE_SEC } from './utils/scaling'
-import { useAppDispatch, receiveKillmail, trimKillmailsBefore, receivePing } from './store'
+import { useAppDispatch, receiveKillmail, trimKillmailsBefore, receivePing, AppDispatch } from './store'
+import each from 'lodash/each'
 
 const subscribeMessage = (channel: string) => JSON.stringify({
   "action": "sub",
@@ -65,6 +66,14 @@ const parseWebsocketKillmail = (raw: WebsocketKillmail): Killmail => {
   }
 }
 
+const processWebsocketMessage = (message: WebsocketMessage, dispatch: AppDispatch) => {
+  if ('killmail_id' in message) {
+    dispatch(receiveKillmail(parseWebsocketKillmail(message)))
+  } else if ('tqStatus' in message) {
+    dispatch(receivePing())
+  }
+}
+
 export function useKillmails(sourceUrl: string): void {
   const dispatch = useAppDispatch()
 
@@ -76,6 +85,12 @@ export function useKillmails(sourceUrl: string): void {
   }, [dispatch])
 
   useEffect(() => {
+    fetch(process.env.PUBLIC_URL + '/api/recent').then(res => res.json()).then(data => {
+      each(data, message => processWebsocketMessage(message, dispatch))
+    })
+  }, [dispatch])
+
+  useEffect(() => {
     const connection = new WebSocket(sourceUrl)
 
     connection.onopen = () => {
@@ -84,15 +99,7 @@ export function useKillmails(sourceUrl: string): void {
     }
 
     connection.onmessage = (e) => {
-      const parsed: WebsocketMessage = JSON.parse(e.data)
-
-      if ('killmail_id' in parsed) {
-        dispatch(receiveKillmail(parseWebsocketKillmail(parsed)))
-      } else if ('tqStatus' in parsed) {
-        dispatch(receivePing())
-      } else {
-        console.error(parsed)
-      }
+      processWebsocketMessage(JSON.parse(e.data), dispatch)
     }
 
     connection.onclose = (e) => {
