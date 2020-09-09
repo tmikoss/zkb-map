@@ -1,8 +1,12 @@
 import { useEffect } from 'react'
 import parseISO from 'date-fns/parseISO'
 import { scaleValue, MAX_KILLMAIL_AGE_SEC } from './utils/scaling'
-import { useAppDispatch, receiveKillmail, trimKillmailsBefore, receivePing, AppDispatch } from './store'
-import each from 'lodash/each'
+import { useAppDispatch, receiveKillmail, trimKillmailsBefore, receivePing } from './store'
+import map from 'lodash/map'
+import compact from 'lodash/compact'
+import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
+import maxDate from 'date-fns/max'
+import addMilliseconds from 'date-fns/addMilliseconds'
 
 const subscribeMessage = (channel: string) => JSON.stringify({
   "action": "sub",
@@ -46,32 +50,39 @@ type WebsocketKillmail = {
 
 type WebsocketMessage = WebsocketKillmail | WebsocketStatusMessage
 
-const parseWebsocketKillmail = (raw: WebsocketKillmail): Killmail => {
-  const { killmail_id, killmail_time, victim, solar_system_id, zkb } = raw
+const parseWebsocketKillmail = (raw: WebsocketKillmail): Killmail | null => {
+  try {
+    const { killmail_id, killmail_time, victim, solar_system_id, zkb } = raw
 
-  const time = parseISO(killmail_time)
+    const time = parseISO(killmail_time)
 
-  return {
-    id: killmail_id,
-    time,
-    receivedAt: new Date(),
-    characterId: victim.character_id,
-    corporationId: victim.corporation_id,
-    allianceId: victim.alliance_id,
-    shipTypeId: victim.ship_type_id,
-    solarSystemId: solar_system_id,
-    url: zkb.url,
-    totalValue: zkb.totalValue,
-    scaledValue: scaleValue(zkb.totalValue)
+    return {
+      id: killmail_id,
+      time,
+      receivedAt: new Date(),
+      characterId: victim.character_id,
+      corporationId: victim.corporation_id,
+      allianceId: victim.alliance_id,
+      shipTypeId: victim.ship_type_id,
+      solarSystemId: solar_system_id,
+      url: zkb.url,
+      totalValue: zkb.totalValue,
+      scaledValue: scaleValue(zkb.totalValue)
+    }
+  } catch (error) {
+    return null
   }
 }
 
-const processWebsocketMessage = (message: WebsocketMessage, dispatch: AppDispatch) => {
-  if ('killmail_id' in message) {
-    dispatch(receiveKillmail(parseWebsocketKillmail(message)))
-  } else if ('tqStatus' in message) {
-    dispatch(receivePing())
+const normalizeReceivedAtForCachedMessages = (killmails: Killmail[]): Killmail[] => {
+  if (killmails.length < 1) {
+    return killmails
   }
+
+  const latestTimestamp = maxDate(map(killmails, 'time'))
+  const offset = differenceInMilliseconds(new Date(), latestTimestamp)
+
+  return map(killmails, km => ({ ...km, receivedAt: addMilliseconds(km.time, offset) }))
 }
 
 export function useKillmails(sourceUrl: string): void {
@@ -86,7 +97,10 @@ export function useKillmails(sourceUrl: string): void {
 
   useEffect(() => {
     fetch(process.env.PUBLIC_URL + '/api/recent').then(res => res.json()).then(data => {
-      each(data, message => processWebsocketMessage(message, dispatch))
+      const killmails = normalizeReceivedAtForCachedMessages(compact(map(data, parseWebsocketKillmail)))
+      map(killmails, killmail => {
+        dispatch(receiveKillmail(killmail))
+      })
     })
   }, [dispatch])
 
@@ -99,7 +113,18 @@ export function useKillmails(sourceUrl: string): void {
     }
 
     connection.onmessage = (e) => {
-      processWebsocketMessage(JSON.parse(e.data), dispatch)
+      const parsed: WebsocketMessage = JSON.parse(e.data)
+
+      if ('killmail_id' in parsed) {
+        const killmail = parseWebsocketKillmail(parsed)
+        if (killmail) {
+          dispatch(receiveKillmail(killmail))
+        }
+      } else if ('tqStatus' in parsed) {
+        dispatch(receivePing())
+      } else {
+        console.error(parsed)
+      }
     }
 
     connection.onclose = (e) => {
