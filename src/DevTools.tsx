@@ -51,7 +51,7 @@ const DevTools: React.FC<{}> = () => {
 
   const randomSolarSystemId = useCallback(() => sample(Object.keys(solarSystems)) as string, [solarSystems])
 
-  const [statsOn, setStatsOn] = useState(true)
+  const [statsOn, setStatsOn] = useState(false)
 
   const [activityOn, setActivityOn] = useState(false)
   useEffect(() => {

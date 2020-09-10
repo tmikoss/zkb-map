@@ -1,10 +1,9 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { ageMultiplier, killmailFullyVisibleMs } from './utils/scaling'
 import values from 'lodash/values'
 import sortBy from 'lodash/sortBy'
 import compact from 'lodash/compact'
-import round from 'lodash/round'
 import { animated, useSpring, OpaqueInterpolation } from 'react-spring'
 import { useAnimationFrame } from './useAnimationFrame'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
@@ -57,23 +56,20 @@ const KillmailEntry: React.FC<{
 
   const [{ opacity, height, paddingBottom }, set] = useSpring(() => ({ opacity: 0, height: 0, paddingBottom: 0 }))
 
-  useAnimationFrame(() => {
+  const animationFrame = useCallback(() => {
     const age = differenceInMilliseconds(new Date(), receivedAt)
-    const opacity = round(ageMultiplier(age, scaledValue), 2)
-    let heightMultiplier: number
-    if (age < killmailFullyVisibleMs) {
-      heightMultiplier = 1
-    } else if (opacity > 0.1 ) {
-      heightMultiplier = 1
+    let opacity = ageMultiplier(age, scaledValue)
+    let height: number
+    if (age < killmailFullyVisibleMs || opacity > 0.1) {
+      height = UNIT
     } else {
-      heightMultiplier = opacity * 5
+      height = 0
+      opacity = 0
     }
-    set({
-      opacity,
-      height: round(UNIT * heightMultiplier, 1),
-      paddingBottom: round(UNIT / 8 * heightMultiplier, 1)
-    })
-  })
+    set({ opacity, height, paddingBottom: height / 8 })
+  }, [set])
+
+  useAnimationFrame(animationFrame)
 
   return <EntryContainer style={{ opacity, paddingBottom, gridAutoRows: height }}>
     {shipTypeId && <Image
