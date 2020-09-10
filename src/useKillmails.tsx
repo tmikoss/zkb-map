@@ -13,7 +13,7 @@ const subscribeMessage = (channel: string) => JSON.stringify({
   "channel": channel
 })
 
-const decayIntervalMs = 2 * 1000
+const decayIntervalMs = 5 * 1000
 
 type WebsocketStatusMessage = {
   action: 'tqStatus'
