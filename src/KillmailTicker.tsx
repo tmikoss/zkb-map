@@ -1,21 +1,16 @@
 import React from 'react'
-import styled, { keyframes } from 'styled-components'
+import styled from 'styled-components'
 import { theme } from './utils/theme'
-import { MAX_KILLMAIL_AGE_SEC } from './utils/scaling'
+import { ageMultiplier } from './utils/scaling'
 import { stringifyPrice } from './utils/formatting'
 import values from 'lodash/values'
 import sortBy from 'lodash/sortBy'
+import compact from 'lodash/compact'
+import { animated, useSpring } from 'react-spring'
+import { useAnimationFrame } from './useAnimationFrame'
+import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 
 const UNIT = 32
-
-// 50%, because MAX_KILLMAIL_AGE_SEC is not a guaranteed removal
-const fade = keyframes`
-  0% { opacity: 0; }
-  0.5% { opacity: 1; }
-  10% { opacity: 0.9; }
-  50% { opacity: 0; }
-  100% { opacity: 0; }
-`
 
 const TickerContainer = styled.div`
   position: absolute;
@@ -25,14 +20,13 @@ const TickerContainer = styled.div`
   max-height: calc(100vh - ${UNIT}px);
 `
 
-const EntryContainer = styled.div`
+const EntryContainer = styled(animated.div)`
   display: grid;
   grid-template-areas: "ship character corporation alliance"
                        "ship data      data        data";
   grid-template-columns: ${UNIT * 2}px ${UNIT}px ${UNIT}px 1fr;
   grid-template-rows: repeat(2, ${UNIT}px);
   grid-gap: ${UNIT / 8}px;
-  animation: ${fade} ${MAX_KILLMAIL_AGE_SEC * 2}s linear;
 `
 
 const Data = styled.div`
@@ -64,14 +58,18 @@ const KillmailEntry: React.FC<{
   killmail: Killmail
   solarSystem: SolarSystem
 }> = ({ killmail, solarSystem }) => {
-  if (!solarSystem) {
-    return null
-  }
-
   const { name } = solarSystem
-  const { characterId, corporationId, allianceId, shipTypeId, totalValue, url } = killmail
+  const { characterId, corporationId, allianceId, shipTypeId, totalValue, url, receivedAt } = killmail
 
-  return <EntryContainer>
+  const [props, set] = useSpring(() => ({ opacity: 0 }))
+
+  useAnimationFrame(() => {
+    const age = differenceInMilliseconds(new Date(), receivedAt)
+    const opacity = ageMultiplier(age)
+    set({ opacity })
+  })
+
+  return <EntryContainer style={props}>
     {shipTypeId && <Image
       src={`https://images.evetech.net/types/${shipTypeId}/render`}
       area='ship'
@@ -107,11 +105,15 @@ const KillmailTicker: React.FC<{
   killmails: Record<string, Killmail>
   solarSystems: Record<string, SolarSystem>
 }> = ({ killmails, solarSystems }) => {
-  const entries = sortBy(values(killmails), 'receivedAt').reverse().map(km => {
+  const entries = compact(sortBy(values(killmails), 'receivedAt').reverse()).map(km => {
     const { id, solarSystemId } = km
     const solarSystem = solarSystems[solarSystemId]
 
-    return <KillmailEntry killmail={km} solarSystem={solarSystem} key={id} />
+    if (solarSystem) {
+      return <KillmailEntry killmail={km} solarSystem={solarSystem} key={id} />
+    } else {
+      return null
+    }
   })
 
   return <TickerContainer>
