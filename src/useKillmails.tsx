@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import parseISO from 'date-fns/parseISO'
-import { scaleValue, MAX_KILLMAIL_AGE_SEC } from './utils/scaling'
-import { useAppDispatch, receiveKillmail, trimKillmailsBefore, receivePing } from './store'
+import { scaleValue, normalKillmailAgeMs } from './utils/scaling'
+import { useAppDispatch, receiveKillmail, trimKillmails, receivePing } from './store'
 import map from 'lodash/map'
 import compact from 'lodash/compact'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
@@ -13,7 +13,7 @@ const subscribeMessage = (channel: string) => JSON.stringify({
   "channel": channel
 })
 
-const decayIntervalMs = 10 * 1000
+const decayIntervalMs = 2 * 1000
 
 type WebsocketStatusMessage = {
   action: 'tqStatus'
@@ -90,7 +90,7 @@ export function useKillmails(sourceUrl: string): void {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      dispatch(trimKillmailsBefore(MAX_KILLMAIL_AGE_SEC))
+      dispatch(trimKillmails(normalKillmailAgeMs))
     }, decayIntervalMs)
     return () => clearInterval(interval)
   }, [dispatch])
@@ -99,7 +99,7 @@ export function useKillmails(sourceUrl: string): void {
     fetch(process.env.PUBLIC_URL + '/api/recent').then(res => res.json()).then(data => {
       const killmails = normalizeReceivedAtForCachedMessages(compact(map(data, parseWebsocketKillmail)))
       map(killmails, killmail => {
-        dispatch(receiveKillmail(killmail))
+        dispatch(receiveKillmail({ killmail, normalAge: normalKillmailAgeMs }))
       })
     })
   }, [dispatch])
@@ -118,7 +118,7 @@ export function useKillmails(sourceUrl: string): void {
       if ('killmail_id' in parsed) {
         const killmail = parseWebsocketKillmail(parsed)
         if (killmail) {
-          dispatch(receiveKillmail(killmail))
+          dispatch(receiveKillmail({ killmail, normalAge: normalKillmailAgeMs }))
         }
       } else if ('tqStatus' in parsed) {
         dispatch(receivePing())

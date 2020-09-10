@@ -1,16 +1,15 @@
 import * as THREE from 'three'
 import { useThree } from 'react-three-fiber'
 
-export const MAX_KILLMAIL_AGE_SEC = 60
+export const normalKillmailAgeMs = 20 * 1000
+export const killmailFullyVisibleMs = 500
 
-const fullyVisibleMs = 500
-const fullyInvisibleMs = MAX_KILLMAIL_AGE_SEC * 1000
-
-export const ageMultiplier = (age: number): number => {
-  if (age < fullyVisibleMs) {
-    return THREE.MathUtils.smoothstep(age, 0, fullyVisibleMs)
+export const ageMultiplier = (age: number, scale: number): number => {
+  if (age < killmailFullyVisibleMs) {
+    return THREE.MathUtils.smoothstep(age, 0, killmailFullyVisibleMs)
   } else {
-    const t = THREE.MathUtils.smoothstep(age, fullyVisibleMs, fullyInvisibleMs) - 1
+    const fullyInvisibleMs = normalKillmailAgeMs * scale
+    const t = THREE.MathUtils.smoothstep(age, killmailFullyVisibleMs, fullyInvisibleMs) - 1
     return Math.pow(t, 4)
   }
 }

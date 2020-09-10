@@ -36,7 +36,7 @@ const Flares: React.FC<{
       const solarSystem = solarSystems[solarSystemId] || {}
 
       const age = differenceInMilliseconds(now, receivedAt)
-      scales[index] = baseFlareSize * scaledValue * ageMultiplier(age)
+      scales[index] = baseFlareSize * scaledValue * ageMultiplier(age, scaledValue)
 
       positionToArray(solarSystem, positions, index)
 

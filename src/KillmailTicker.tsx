@@ -1,12 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { theme } from './utils/theme'
-import { ageMultiplier } from './utils/scaling'
-import { stringifyPrice } from './utils/formatting'
+import { ageMultiplier, killmailFullyVisibleMs } from './utils/scaling'
 import values from 'lodash/values'
 import sortBy from 'lodash/sortBy'
 import compact from 'lodash/compact'
-import { animated, useSpring } from 'react-spring'
+import round from 'lodash/round'
+import { animated, useSpring, OpaqueInterpolation } from 'react-spring'
 import { useAnimationFrame } from './useAnimationFrame'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 
@@ -18,20 +17,17 @@ const TickerContainer = styled.div`
   left: ${UNIT / 2}px;
   overflow: hidden;
   max-height: calc(100vh - ${UNIT}px);
+  display: flex;
+  flex-flow: column;
 `
 
 const EntryContainer = styled(animated.div)`
   display: grid;
-  grid-template-areas: "ship character corporation alliance"
-                       "ship data      data        data";
-  grid-template-columns: ${UNIT * 2}px ${UNIT}px ${UNIT}px 1fr;
-  grid-template-rows: repeat(2, ${UNIT}px);
-  grid-gap: ${UNIT / 8}px;
-`
-
-const Data = styled.div`
-  grid-area: data;
-  color: ${theme.text};
+  grid-template-areas: "ship character corporation alliance";
+  grid-auto-columns: ${UNIT}px;
+  grid-auto-rows: ${UNIT}px;
+  gap: ${UNIT / 8}px;
+  padding-bottom: ${UNIT / 8}px;
 `
 
 const ImageLink = styled.a<{ area: string }>`
@@ -42,13 +38,13 @@ const ImageLink = styled.a<{ area: string }>`
 const Image: React.FC<{
   src: string
   area: string
-  size: number
+  height: OpaqueInterpolation<any>
   href?: string
-}> = ({ src, area, size, href }) => {
+}> = ({ src, area, href, height }) => {
   return <ImageLink href={href} area={area} target='_blank'>
-    <img
-      src={`${src}?size=${size}`}
-      style={{ height: size, width: size }}
+    <animated.img
+      src={`${src}?size=${UNIT}`}
+      style={{ height, width: UNIT }}
       alt=''
     />
   </ImageLink>
@@ -56,48 +52,54 @@ const Image: React.FC<{
 
 const KillmailEntry: React.FC<{
   killmail: Killmail
-  solarSystem: SolarSystem
-}> = ({ killmail, solarSystem }) => {
-  const { name } = solarSystem
-  const { characterId, corporationId, allianceId, shipTypeId, totalValue, url, receivedAt } = killmail
+}> = ({ killmail }) => {
+  const { characterId, corporationId, allianceId, shipTypeId, url, receivedAt, scaledValue } = killmail
 
-  const [props, set] = useSpring(() => ({ opacity: 0 }))
+  const [{ opacity, height, paddingBottom }, set] = useSpring(() => ({ opacity: 0, height: 0, paddingBottom: 0 }))
 
   useAnimationFrame(() => {
     const age = differenceInMilliseconds(new Date(), receivedAt)
-    const opacity = ageMultiplier(age)
-    set({ opacity })
+    const opacity = round(ageMultiplier(age, scaledValue), 2)
+    let heightMultiplier: number
+    if (age < killmailFullyVisibleMs) {
+      heightMultiplier = 1
+    } else if (opacity > 0.1 ) {
+      heightMultiplier = 1
+    } else {
+      heightMultiplier = opacity * 5
+    }
+    set({
+      opacity,
+      height: round(UNIT * heightMultiplier, 1),
+      paddingBottom: round(UNIT / 8 * heightMultiplier, 1)
+    })
   })
 
-  return <EntryContainer style={props}>
+  return <EntryContainer style={{ opacity, paddingBottom, gridAutoRows: height }}>
     {shipTypeId && <Image
       src={`https://images.evetech.net/types/${shipTypeId}/render`}
       area='ship'
-      size={UNIT * 2}
+      height={height}
       href={url}
     />}
     {characterId && <Image
       src={`https://images.evetech.net/characters/${characterId}/portrait`}
       area='character'
-      size={UNIT}
+      height={height}
       href={`https://zkillboard.com/character/${characterId}/`}
     />}
     {corporationId && <Image
       src={`https://images.evetech.net/corporations/${corporationId}/logo`}
       area='corporation'
-      size={UNIT}
+      height={height}
       href={`https://zkillboard.com/corporation/${corporationId}/`}
     />}
     {allianceId && <Image
       src={`https://images.evetech.net/alliances/${allianceId}/logo`}
       area='alliance'
-      size={UNIT}
+      height={height}
       href={`https://zkillboard.com/alliance/${allianceId}/`}
     />}
-
-    <Data>
-      {stringifyPrice(totalValue)} @ {name}
-    </Data>
   </EntryContainer>
 }
 
@@ -110,7 +112,7 @@ const KillmailTicker: React.FC<{
     const solarSystem = solarSystems[solarSystemId]
 
     if (solarSystem) {
-      return <KillmailEntry killmail={km} solarSystem={solarSystem} key={id} />
+      return <KillmailEntry killmail={km} key={id} />
     } else {
       return null
     }

@@ -23,7 +23,7 @@ export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector
 
 export { fetchSolarSystems } from './solarSystems'
-export { receiveKillmail, trimKillmailsBefore } from './killmails'
+export { receiveKillmail, trimKillmails } from './killmails'
 export { receivePing, checkConnection } from './connection'
 
 export default store

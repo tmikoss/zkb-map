@@ -5,7 +5,7 @@ import { theme } from './utils/theme'
 import { Stats } from 'drei'
 import random from 'lodash/random'
 import sample from 'lodash/sample'
-import { scaleValue } from './utils/scaling'
+import { scaleValue, normalKillmailAgeMs } from './utils/scaling'
 
 const Container = styled.div`
   position: absolute;
@@ -21,23 +21,26 @@ const minValue = 10_000
 const maxValue = 10_000_000_000
 
 let testId = new Date().getTime()
-const buildTestKillmail = (value: number, solarSystemId: string): Killmail => {
+const buildTestKillmail = (value: number, solarSystemId: string) => {
   testId += 1
 
   const now = new Date()
 
   return {
-    id: testId,
-    time: now,
-    receivedAt: now,
-    characterId: 90230071,
-    corporationId: 98076155,
-    allianceId: 99007254,
-    shipTypeId: 22456,
-    solarSystemId: parseInt(solarSystemId),
-    url: 'https://example.com',
-    totalValue: value,
-    scaledValue: scaleValue(value)
+    killmail: {
+      id: testId,
+      time: now,
+      receivedAt: now,
+      characterId: 90230071,
+      corporationId: 98076155,
+      allianceId: 99007254,
+      shipTypeId: 22456,
+      solarSystemId: parseInt(solarSystemId),
+      url: 'https://example.com',
+      totalValue: value,
+      scaledValue: scaleValue(value)
+    },
+    normalAge: normalKillmailAgeMs
   }
 }
 
@@ -48,7 +51,7 @@ const DevTools: React.FC<{}> = () => {
 
   const randomSolarSystemId = useCallback(() => sample(Object.keys(solarSystems)) as string, [solarSystems])
 
-  const [statsOn, setStatsOn] = useState(false)
+  const [statsOn, setStatsOn] = useState(true)
 
   const [activityOn, setActivityOn] = useState(false)
   useEffect(() => {
