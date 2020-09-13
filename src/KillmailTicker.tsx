@@ -1,9 +1,6 @@
 import React, { useCallback, useContext } from 'react'
 import styled from 'styled-components'
 import { ageMultiplier, killmailFullyVisibleMs } from './utils/scaling'
-import values from 'lodash/values'
-import sortBy from 'lodash/sortBy'
-import compact from 'lodash/compact'
 import { animated, useSpring, OpaqueInterpolation } from 'react-spring'
 import { useAnimationFrame } from './useAnimationFrame'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
@@ -102,19 +99,9 @@ const KillmailEntry: React.FC<{
 }
 
 const KillmailTicker: React.FC<{
-  killmails: Record<string, Killmail>
-  solarSystems: Record<string, SolarSystem>
-}> = ({ killmails, solarSystems }) => {
-  const entries = compact(sortBy(values(killmails), 'receivedAt').reverse()).map(km => {
-    const { id, solarSystemId } = km
-    const solarSystem = solarSystems[solarSystemId]
-
-    if (solarSystem) {
-      return <KillmailEntry killmail={km} key={id} />
-    } else {
-      return null
-    }
-  })
+  killmails: Killmail[]
+}> = ({ killmails }) => {
+  const entries = killmails.map(km => <KillmailEntry killmail={km} key={km.id} />)
 
   return <TickerContainer>
     {entries}

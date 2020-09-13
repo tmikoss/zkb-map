@@ -3,7 +3,6 @@ import { useKillmails } from './useKillmails'
 import styled, { createGlobalStyle, ThemeProvider, ThemeContext } from 'styled-components'
 import reset from 'styled-reset'
 import { Canvas } from 'react-three-fiber'
-import * as THREE from 'three'
 import { theme } from './utils/theme'
 import Stars from './Stars'
 import Flares from './Flares'
@@ -13,6 +12,8 @@ import DevTools from './DevTools'
 import { useConnectionStatus } from './useConnectionStatus'
 import Controls from './Controls'
 import Camera from './Camera'
+import sortBy from 'lodash/sortBy'
+import reduce from 'lodash/reduce'
 
 const devMode = process.env.NODE_ENV === 'development'
 
@@ -57,10 +58,19 @@ const App: React.FC<{}> = () => {
   const killmailsRef = useRef<Killmail[]>([])
 
   const solarSystems = useAppSelector(state => state.solarSystems)
-  const killmails = useAppSelector(state => state.killmails)
+  const killmails = useAppSelector(state => {
+    const inCurrentSystems = reduce(state.killmails, (arr, km) => {
+      if (solarSystems[km.solarSystemId]) {
+        arr.push(km)
+      }
+      return arr
+    }, [] as Killmail[])
+    return sortBy(inCurrentSystems, 'receivedAt').reverse()
+  })
+  const mode = useAppSelector(state => state.configuration.cameraMode)
 
   useEffect(() => {
-    killmailsRef.current = Object.values(killmails)
+    killmailsRef.current = killmails
   }, [killmails])
 
   return <ThemeProvider theme={theme}>
@@ -73,12 +83,12 @@ const App: React.FC<{}> = () => {
         <Stars solarSystems={solarSystems} />
         <Flares solarSystems={solarSystems} killmails={killmailsRef} />
 
-        <Camera />
+        <Camera solarSystems={solarSystems} killmails={killmailsRef} mode={mode} />
       </ThemeContext.Provider>
     </Canvas>
 
     <TopLeft>
-      <KillmailTicker killmails={killmails} solarSystems={solarSystems} />
+      <KillmailTicker killmails={killmails} />
     </TopLeft>
 
     <TopRight>

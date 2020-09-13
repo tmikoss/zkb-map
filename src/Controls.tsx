@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useCallback, useRef, useContext } from 'react'
 import styled from 'styled-components'
-import { useAppDispatch, receiveKillmail, useAppSelector } from './store'
+import { useAppDispatch, useAppSelector } from './store'
 import { Stats } from 'drei'
 import random from 'lodash/random'
 import sample from 'lodash/sample'
 import { scaleValue, normalKillmailAgeMs } from './utils/scaling'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
 import { ThemeContext } from 'styled-components'
+import { CameraMode } from './store/configuration'
+import { updateConfiguration } from './store'
 
 const Container = styled.div`
   color: ${({ theme }) => theme.text};
   display: grid;
-  grid-template-areas: "fullscreen connection";
+  grid-template-areas: "fullscreen connection camera";
   grid-auto-columns: ${({ theme }) => theme.unit}px;
   grid-auto-rows: ${({ theme }) => theme.unit}px;
   gap: ${({ theme }) => theme.gapSize}px;
@@ -49,10 +51,36 @@ const ConnectionStatus: React.FC = () => {
   </FlatButton>
 }
 
+const cameraIcon: Record<CameraMode, FontAwesomeIconProps['icon']> = {
+  [CameraMode.free]: 'arrows-alt',
+  [CameraMode.follow]: 'video'
+}
+
+const nextCameraModes: Record<CameraMode, CameraMode> = {
+  [CameraMode.free]: CameraMode.follow,
+  [CameraMode.follow]: CameraMode.free
+}
+
+const CameraStatus: React.FC = () => {
+  const mode = useAppSelector(state => state.configuration.cameraMode)
+  const dispatch = useAppDispatch()
+
+  const onClick = () => {
+    const nextCameraMode = nextCameraModes[mode]
+    dispatch(updateConfiguration({ cameraMode: nextCameraMode }))
+  }
+
+  return <FlatButton type='button' onClick={onClick} area='camera'>
+    <FontAwesomeIcon icon={cameraIcon[mode]} />
+  </FlatButton>
+}
+
+
 const Controls: React.FC = () => {
   return <Container>
     <FullscreenToggle />
     <ConnectionStatus />
+    <CameraStatus />
   </Container>
 }
 

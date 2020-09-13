@@ -37,7 +37,7 @@ const slice = createSlice({
           y: z,
           z: y,
           name: n,
-          radius: clamp(r * 100, 0.75, 1.25),
+          radius: clamp(r * 100, 0.5, 1.5),
           security: s
         }
       })

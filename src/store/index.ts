@@ -5,8 +5,9 @@ import { combineReducers } from 'redux'
 import solarSystems from './solarSystems'
 import killmails from './killmails'
 import connection from './connection'
+import configuration from './configuration'
 
-const rootReducer = combineReducers({ solarSystems, killmails, connection })
+const rootReducer = combineReducers({ solarSystems, killmails, connection, configuration })
 
 const store = configureStore({
   reducer: rootReducer,
@@ -25,5 +26,6 @@ export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector
 export { fetchSolarSystems } from './solarSystems'
 export { receiveKillmail, trimKillmails } from './killmails'
 export { receivePing, checkConnection } from './connection'
+export { updateConfiguration } from './configuration'
 
 export default store

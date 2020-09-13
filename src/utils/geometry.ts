@@ -16,7 +16,7 @@ export const setAttributes = (geometry: THREE.BufferGeometry, positions: Float32
   geometry.attributes.size.needsUpdate = true
 }
 
-interface HasPosition {
+export interface HasPosition {
  x: number
  y: number
  z: number
