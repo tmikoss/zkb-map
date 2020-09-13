@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "1907a97cebe13fe716514cbdb0170394",
+    "revision": "9ca082bece771cee566d410e4ad59b25",
     "url": "https://tmikoss.github.io/zkb-map/index.html"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "https://tmikoss.github.io/zkb-map/static/js/2.13b98db1.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "ca18d701214c4540af85",
-    "url": "https://tmikoss.github.io/zkb-map/static/js/main.1864b953.chunk.js"
+    "revision": "2f27d57c096e8e7a1fe3",
+    "url": "https://tmikoss.github.io/zkb-map/static/js/main.d69108c0.chunk.js"
   },
   {
     "revision": "b516728e5cd5ea9555d5",
