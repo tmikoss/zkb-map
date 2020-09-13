@@ -44,11 +44,9 @@ const Camera: React.FC<{
   solarSystems: Record<string, SolarSystem>,
   killmails: React.MutableRefObject<Killmail[]>,
   mode: CameraMode
-}> = ({ solarSystems, mode, killmails }) => {
+}> = React.memo(({ solarSystems, mode, killmails }) => {
   const ref = useRef<THREE.Camera>()
   const position = useRef(defaultPosition)
-
-  console.log('updated')
 
   useEffect(() => {
     const solarSystemArray = Object.values(solarSystems)
@@ -143,6 +141,6 @@ const Camera: React.FC<{
       fov={fov}
     />
   </>
-}
+})
 
 export default Camera
