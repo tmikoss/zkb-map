@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import { CameraControls } from './CameraControls'
 import { PerspectiveCamera } from 'drei'
 import * as THREE from 'three'
 import { CameraMode } from './store/configuration'
@@ -13,7 +12,6 @@ const far = 10_000
 const fov = 90
 
 const defaultPosition = new THREE.Vector3(0, 0, 700)
-const defaultQuaternion = new THREE.Quaternion()
 
 const minRadius = defaultPosition.z / 3
 const movementMultiplier = 0.01
@@ -50,6 +48,8 @@ const Camera: React.FC<{
   const ref = useRef<THREE.Camera>()
   const position = useRef(defaultPosition)
 
+  console.log('updated')
+
   useEffect(() => {
     const solarSystemArray = Object.values(solarSystems)
     if (solarSystemArray.length > 0) {
@@ -61,12 +61,12 @@ const Camera: React.FC<{
   }, [solarSystems])
 
   useFrame(() => {
-    if (ref.current && position.current && mode === CameraMode.follow) {
+    if (ref.current && position.current) {
       let target = position.current
 
       const count = killmails.current?.length || 0
 
-      if (count > 0) {
+      if (count > 0 && mode === CameraMode.follow) {
         const now = new Date()
 
         let maxX = -Infinity
@@ -131,7 +131,6 @@ const Camera: React.FC<{
       }
 
       ref.current.position.lerp(target, movementMultiplier)
-      ref.current.quaternion.slerp(defaultQuaternion, movementMultiplier)
     }
   })
 
@@ -139,13 +138,10 @@ const Camera: React.FC<{
     <PerspectiveCamera
       ref={ref}
       makeDefault
-      position={ref.current?.position || position.current}
-      quaternion={ref.current?.quaternion || defaultQuaternion}
       near={near}
       far={far}
       fov={fov}
     />
-    {mode === CameraMode.free && <CameraControls />}
   </>
 }
 
