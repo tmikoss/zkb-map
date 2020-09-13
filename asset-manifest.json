@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "https://tmikoss.github.io/zkb-map/static/js/main.d69108c0.chunk.js",
-    "main.js.map": "https://tmikoss.github.io/zkb-map/static/js/main.d69108c0.chunk.js.map",
+    "main.js": "https://tmikoss.github.io/zkb-map/static/js/main.bd4a81f0.chunk.js",
+    "main.js.map": "https://tmikoss.github.io/zkb-map/static/js/main.bd4a81f0.chunk.js.map",
     "runtime-main.js": "https://tmikoss.github.io/zkb-map/static/js/runtime-main.69cbe273.js",
     "runtime-main.js.map": "https://tmikoss.github.io/zkb-map/static/js/runtime-main.69cbe273.js.map",
     "static/js/2.13b98db1.chunk.js": "https://tmikoss.github.io/zkb-map/static/js/2.13b98db1.chunk.js",
     "static/js/2.13b98db1.chunk.js.map": "https://tmikoss.github.io/zkb-map/static/js/2.13b98db1.chunk.js.map",
     "index.html": "https://tmikoss.github.io/zkb-map/index.html",
-    "precache-manifest.63ba088598d56a3e55f930ab12349f44.js": "https://tmikoss.github.io/zkb-map/precache-manifest.63ba088598d56a3e55f930ab12349f44.js",
+    "precache-manifest.d9b41ae6a077587cd3673ce42dc4a53d.js": "https://tmikoss.github.io/zkb-map/precache-manifest.d9b41ae6a077587cd3673ce42dc4a53d.js",
     "service-worker.js": "https://tmikoss.github.io/zkb-map/service-worker.js",
     "static/js/2.13b98db1.chunk.js.LICENSE.txt": "https://tmikoss.github.io/zkb-map/static/js/2.13b98db1.chunk.js.LICENSE.txt",
     "static/media/glow.png": "https://tmikoss.github.io/zkb-map/static/media/glow.3b6b0c75.png"
@@ -15,6 +15,6 @@
   "entrypoints": [
     "static/js/runtime-main.69cbe273.js",
     "static/js/2.13b98db1.chunk.js",
-    "static/js/main.d69108c0.chunk.js"
+    "static/js/main.bd4a81f0.chunk.js"
   ]
 }
