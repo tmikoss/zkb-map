@@ -1,17 +1,18 @@
 import React, { useRef, useEffect } from 'react'
 import { useKillmails } from './useKillmails'
-import { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle, ThemeProvider, ThemeContext } from 'styled-components'
 import reset from 'styled-reset'
 import { Canvas } from 'react-three-fiber'
 import * as THREE from 'three'
 import { CameraControls } from './CameraControls'
-import { theme, ThemeContext } from './utils/theme'
+import { theme } from './utils/theme'
 import Stars from './Stars'
 import Flares from './Flares'
 import KillmailTicker from './KillmailTicker'
 import { useAppSelector, fetchSolarSystems, useAppDispatch } from './store'
 import DevTools from './DevTools'
 import { useConnectionStatus } from './useConnectionStatus'
+import Controls from './Controls'
 
 const devMode = process.env.NODE_ENV === 'development'
 
@@ -20,13 +21,25 @@ const GlobalStyle = createGlobalStyle`
 
   #root {
     height: 100vh;
-    background: ${theme.background};
+    background: ${({ theme }) => theme.background};
     overflow: hidden;
   }
 
   canvas {
     outline: 0;
   }
+`
+
+const TopLeft = styled.div`
+  position: absolute;
+  top: 1vmin;
+  left: 1vmin;
+`
+
+const TopRight = styled.div`
+  position: absolute;
+  top: 1vmin;
+  right: 1vmin;
 `
 
 const cameraConfig  = {
@@ -56,21 +69,29 @@ const App: React.FC<{}> = () => {
     killmailsRef.current = Object.values(killmails)
   }, [killmails])
 
-  return <ThemeContext.Provider value={theme}>
+  return <ThemeProvider theme={theme}>
     <GlobalStyle />
 
     <Canvas camera={cameraConfig} onCreated={({ gl }) => gl.setClearColor(theme.background)}>
-      <ambientLight />
+      <ThemeContext.Provider value={theme}>
+        <ambientLight />
 
-      <Stars solarSystems={solarSystems} />
-      <Flares solarSystems={solarSystems} killmails={killmailsRef} />
+        <Stars solarSystems={solarSystems} />
+        <Flares solarSystems={solarSystems} killmails={killmailsRef} />
 
-      <CameraControls />
+        <CameraControls />
+      </ThemeContext.Provider>
     </Canvas>
 
-    <KillmailTicker killmails={killmails} solarSystems={solarSystems} />
-    {devMode && <DevTools />}
-  </ThemeContext.Provider>
+    <TopLeft>
+      <KillmailTicker killmails={killmails} solarSystems={solarSystems} />
+    </TopLeft>
+
+    <TopRight>
+      <Controls />
+      {devMode && <DevTools />}
+    </TopRight>
+  </ThemeProvider>
 }
 
 export default App;

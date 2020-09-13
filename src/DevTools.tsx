@@ -1,17 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import styled from 'styled-components'
 import { useAppDispatch, receiveKillmail, useAppSelector } from './store'
-import { theme } from './utils/theme'
 import { Stats } from 'drei'
 import random from 'lodash/random'
 import sample from 'lodash/sample'
 import { scaleValue, normalKillmailAgeMs } from './utils/scaling'
 
 const Container = styled.div`
-  position: absolute;
-  top: 1vh;
-  right: 1vw;
-  color: ${theme.text};
+  color: ${({ theme }) => theme.text};
   display: flex;
   flex-flow: column;
   gap: 1vh;
@@ -45,6 +41,7 @@ const buildTestKillmail = (value: number, solarSystemId: string) => {
 }
 
 const DevTools: React.FC<{}> = () => {
+  const statsContainer = useRef(null)
   const solarSystems = useAppSelector(state => state.solarSystems)
   const dispatch = useAppDispatch()
   const [activityInterval, setAcitivtyInterval] = useState(1000)
@@ -95,18 +92,13 @@ const DevTools: React.FC<{}> = () => {
     }
   }, [oneSystemFightOn, dispatch, randomSolarSystemId, activityInterval])
 
-  const connected = useAppSelector(state => state.connection.connected)
-
   return <Container>
-    <div>
-      conenction = {connected ? 'OK' : '-'}
-    </div>
-
     <label>
       <input type='checkbox' checked={statsOn} onChange={() => setStatsOn(!statsOn)} />
       Show FPS
     </label>
-    {statsOn && <Stats />}
+    <div ref={statsContainer}></div>
+    {statsOn && <Stats parent={statsContainer} />}
 
     <label>
       <input type='range' min={500} max={30000} value={activityInterval} onChange={({ target: { value } }) => setAcitivtyInterval(parseInt(value)) }/>

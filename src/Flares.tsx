@@ -5,7 +5,7 @@ import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import { ageMultiplier, useMinViewportSize } from './utils/scaling'
 import { buildAttributes, setAttributes, positionToArray } from './utils/geometry'
 import Points from './Points'
-import { ThemeContext } from './utils/theme'
+import { ThemeContext } from 'styled-components'
 
 const Flares: React.FC<{
   solarSystems: Record<string, SolarSystem>

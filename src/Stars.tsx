@@ -2,7 +2,7 @@ import React, { useRef, useContext } from 'react'
 import * as THREE from 'three'
 import { buildAttributes, setAttributes, positionToArray } from './utils/geometry'
 import Points from './Points'
-import { ThemeContext } from './utils/theme'
+import { ThemeContext } from 'styled-components'
 import { useMinViewportSize } from './utils/scaling'
 import { useFrame } from 'react-three-fiber'
 
