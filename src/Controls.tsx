@@ -20,6 +20,7 @@ const FlatButton = styled.button<{ area: string }>`
   background: transparent;
   border: none;
   grid-area: ${({ area }) => area};
+  cursor: ${({ onClick }) => onClick ? 'pointer' : 'default'};
 `
 
 const FullscreenToggle: React.FC = () => {
@@ -33,7 +34,7 @@ const FullscreenToggle: React.FC = () => {
     }
   }
 
-  return <FlatButton type='button' onClick={onClick} area='fullscreen'>
+  return <FlatButton type='button' title={fullScreen ? 'Exit fullscreen' : 'Go fullscreen'} onClick={onClick} area='fullscreen'>
     <FontAwesomeIcon icon={fullScreen ? 'compress-arrows-alt' : 'expand-arrows-alt'} />
   </FlatButton>
 }
@@ -41,19 +42,24 @@ const FullscreenToggle: React.FC = () => {
 const ConnectionStatus: React.FC = () => {
   const connected = useAppSelector(state => state.connection.connected)
 
-  return <FlatButton type='button' area='connection'>
+  return <FlatButton type='button' title={connected ? 'Connected to live feed' : 'Disconnected from live feed!'} area='connection'>
     <FontAwesomeIcon icon={connected ? 'link' : 'unlink'} />
   </FlatButton>
 }
 
 const cameraIcon: Record<CameraMode, FontAwesomeIconProps['icon']> = {
-  [CameraMode.full]: 'arrows-alt',
+  [CameraMode.full]: 'globe',
   [CameraMode.follow]: 'video'
 }
 
 const nextCameraModes: Record<CameraMode, CameraMode> = {
   [CameraMode.full]: CameraMode.follow,
   [CameraMode.follow]: CameraMode.full
+}
+
+const cameraTitles: Record<CameraMode, string> = {
+  [CameraMode.full]: 'Camera: whole map',
+  [CameraMode.follow]: 'Camera: follow the action'
 }
 
 const CameraStatus: React.FC = () => {
@@ -65,7 +71,7 @@ const CameraStatus: React.FC = () => {
     dispatch(updateConfiguration({ cameraMode: nextCameraMode }))
   }
 
-  return <FlatButton type='button' onClick={onClick} area='camera'>
+  return <FlatButton type='button' title={cameraTitles[mode]} onClick={onClick} area='camera'>
     <FontAwesomeIcon icon={cameraIcon[mode]} />
   </FlatButton>
 }

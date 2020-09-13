@@ -14,6 +14,7 @@ import Controls from './Controls'
 import Camera from './Camera'
 import sortBy from 'lodash/sortBy'
 import reduce from 'lodash/reduce'
+import Effects from './Effects'
 
 const devMode = process.env.NODE_ENV === 'development'
 
@@ -83,6 +84,8 @@ const App: React.FC<{}> = () => {
         <Flares solarSystems={solarSystems} killmails={killmailsRef} />
 
         <Camera solarSystems={solarSystems} killmails={killmailsRef} mode={mode} />
+
+        <Effects />
       </ThemeContext.Provider>
     </Canvas>
 
