@@ -45,7 +45,7 @@ const Image: React.FC<{
 
 const KillmailEntry: React.FC<{
   killmail: Killmail
-}> = ({ killmail }) => {
+}> = React.memo(({ killmail }) => {
   const theme = useContext(ThemeContext)
   const { characterId, corporationId, allianceId, shipTypeId, url, receivedAt, scaledValue } = killmail
 
@@ -96,7 +96,7 @@ const KillmailEntry: React.FC<{
       size={theme.unit}
     />}
   </EntryContainer>
-}
+})
 
 const KillmailTicker: React.FC<{
   killmails: Killmail[]

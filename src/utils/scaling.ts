@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useThree } from 'react-three-fiber'
 
-export const normalKillmailAgeMs = 30 * 1000
+export const normalKillmailAgeMs = 45 * 1000
 export const killmailFullyVisibleMs = 500
 
 export const ageMultiplier = (age: number, scale: number): number => {
