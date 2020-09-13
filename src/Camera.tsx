@@ -8,7 +8,7 @@ import { ageMultiplier } from './utils/scaling'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 
 const near = 0.001
-const far = 10_000
+const far = 100_000
 const fov = 90
 
 const defaultPosition = new THREE.Vector3(0, 0, 700)
