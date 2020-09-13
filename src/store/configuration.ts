@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export enum CameraMode {
-  free,
+  full,
   follow
 }
 

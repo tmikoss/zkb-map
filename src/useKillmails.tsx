@@ -85,7 +85,12 @@ const normalizeReceivedAtForCachedMessages = (killmails: Killmail[]): Killmail[]
   return map(killmails, km => ({ ...km, receivedAt: addMilliseconds(km.time, offset) }))
 }
 
-export function useKillmails(sourceUrl: string): void {
+interface Settings {
+  sourceUrl: string
+  preloadRecent: boolean
+}
+
+export function useKillmails({ sourceUrl, preloadRecent }: Settings): void {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -96,13 +101,13 @@ export function useKillmails(sourceUrl: string): void {
   }, [dispatch])
 
   useEffect(() => {
-    fetch(process.env.PUBLIC_URL + '/api/recent').then(res => res.json()).then(data => {
+    preloadRecent && fetch(process.env.PUBLIC_URL + '/api/recent').then(res => res.json()).then(data => {
       const killmails = normalizeReceivedAtForCachedMessages(compact(map(data, parseWebsocketKillmail)))
       map(killmails, killmail => {
         dispatch(receiveKillmail({ killmail, normalAge: normalKillmailAgeMs }))
       })
     })
-  }, [dispatch])
+  }, [dispatch, preloadRecent])
 
   useEffect(() => {
     const connection = new WebSocket(sourceUrl)

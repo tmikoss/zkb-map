@@ -1,12 +1,7 @@
-import React, { useState, useEffect, useCallback, useRef, useContext } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useAppDispatch, useAppSelector } from './store'
-import { Stats } from 'drei'
-import random from 'lodash/random'
-import sample from 'lodash/sample'
-import { scaleValue, normalKillmailAgeMs } from './utils/scaling'
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
-import { ThemeContext } from 'styled-components'
 import { CameraMode } from './store/configuration'
 import { updateConfiguration } from './store'
 
@@ -52,13 +47,13 @@ const ConnectionStatus: React.FC = () => {
 }
 
 const cameraIcon: Record<CameraMode, FontAwesomeIconProps['icon']> = {
-  [CameraMode.free]: 'arrows-alt',
+  [CameraMode.full]: 'arrows-alt',
   [CameraMode.follow]: 'video'
 }
 
 const nextCameraModes: Record<CameraMode, CameraMode> = {
-  [CameraMode.free]: CameraMode.follow,
-  [CameraMode.follow]: CameraMode.free
+  [CameraMode.full]: CameraMode.follow,
+  [CameraMode.follow]: CameraMode.full
 }
 
 const CameraStatus: React.FC = () => {

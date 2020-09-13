@@ -46,8 +46,7 @@ const TopRight = styled.div`
 const App: React.FC<{}> = () => {
   const dispatch = useAppDispatch()
 
-  const sourceUrl = 'wss://zkillboard.com/websocket/'
-  useKillmails(sourceUrl)
+  useKillmails({ sourceUrl: 'wss://zkillboard.com/websocket/', preloadRecent: devMode })
 
   useConnectionStatus()
 

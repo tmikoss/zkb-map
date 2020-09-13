@@ -62,7 +62,7 @@ const KillmailEntry: React.FC<{
       opacity = 0
     }
     set({ opacity, height, paddingBottom: height / 8 })
-  }, [set, receivedAt, scaledValue])
+  }, [set, receivedAt, scaledValue, theme.unit])
 
   useAnimationFrame(animationFrame)
 
