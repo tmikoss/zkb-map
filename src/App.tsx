@@ -4,7 +4,6 @@ import styled, { createGlobalStyle, ThemeProvider, ThemeContext } from 'styled-c
 import reset from 'styled-reset'
 import { Canvas } from 'react-three-fiber'
 import * as THREE from 'three'
-import { CameraControls } from './CameraControls'
 import { theme } from './utils/theme'
 import Stars from './Stars'
 import Flares from './Flares'
@@ -13,6 +12,7 @@ import { useAppSelector, fetchSolarSystems, useAppDispatch } from './store'
 import DevTools from './DevTools'
 import { useConnectionStatus } from './useConnectionStatus'
 import Controls from './Controls'
+import Camera from './Camera'
 
 const devMode = process.env.NODE_ENV === 'development'
 
@@ -42,12 +42,6 @@ const TopRight = styled.div`
   right: 1vmin;
 `
 
-const cameraConfig  = {
-  position: new THREE.Vector3(0, 0, 1_000),
-  near: 0.001,
-  far: 10_000
-}
-
 const App: React.FC<{}> = () => {
   const dispatch = useAppDispatch()
 
@@ -72,14 +66,14 @@ const App: React.FC<{}> = () => {
   return <ThemeProvider theme={theme}>
     <GlobalStyle />
 
-    <Canvas camera={cameraConfig} onCreated={({ gl }) => gl.setClearColor(theme.background)}>
+    <Canvas onCreated={({ gl }) => gl.setClearColor(theme.background)}>
       <ThemeContext.Provider value={theme}>
         <ambientLight />
 
         <Stars solarSystems={solarSystems} />
         <Flares solarSystems={solarSystems} killmails={killmailsRef} />
 
-        <CameraControls />
+        <Camera />
       </ThemeContext.Provider>
     </Canvas>
 
