@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
-import { useAppSelector } from './store'
+import { useConnection, useConfiguration } from './store'
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
-import { useConfiguration, CameraMode } from './store/configuration'
+import { CameraMode } from './store/configuration'
 
 const Container = styled.div`
   color: ${({ theme }) => theme.text};
@@ -39,7 +39,7 @@ const FullscreenToggle: React.FC = () => {
 }
 
 const ConnectionStatus: React.FC = () => {
-  const connected = useAppSelector(state => state.connection.connected)
+  const connected = useConnection(useCallback(state => state.connected, []))
 
   return <FlatButton type='button' title={connected ? 'Connected to live feed' : 'Disconnected from live feed!'} area='connection'>
     <FontAwesomeIcon icon={connected ? 'link' : 'unlink'} />
@@ -63,8 +63,8 @@ const cameraTitles: Record<CameraMode, string> = {
 
 
 const CameraStatus: React.FC = () => {
-  const mode = useConfiguration(state => state.cameraMode)
-  const update = useConfiguration(state => state.setCameraMode)
+  const mode = useConfiguration(useCallback(state => state.cameraMode, []))
+  const update = useConfiguration(useCallback(state => state.setCameraMode, []))
 
   const onClick = () => {
     const nextCameraMode = nextCameraModes[mode]

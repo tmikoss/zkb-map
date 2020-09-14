@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import parseISO from 'date-fns/parseISO'
 import { scaleValue, normalKillmailAgeMs } from './utils/scaling'
-import { useAppDispatch, receiveKillmail, trimKillmails, receivePing } from './store'
+import { useAppDispatch, receiveKillmail, trimKillmails, useConnection } from './store'
 import map from 'lodash/map'
 import compact from 'lodash/compact'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
@@ -92,6 +92,7 @@ interface Settings {
 
 export function useKillmails({ sourceUrl, preloadRecent }: Settings): void {
   const dispatch = useAppDispatch()
+  const receivePing = useConnection(useCallback(state => state.receivePing, []))
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -126,7 +127,7 @@ export function useKillmails({ sourceUrl, preloadRecent }: Settings): void {
           dispatch(receiveKillmail({ killmail, normalAge: normalKillmailAgeMs }))
         }
       } else if ('tqStatus' in parsed) {
-        dispatch(receivePing())
+        receivePing()
       } else {
         console.error(parsed)
       }
@@ -137,5 +138,5 @@ export function useKillmails({ sourceUrl, preloadRecent }: Settings): void {
     }
 
     return () => connection.close()
-  }, [sourceUrl, dispatch])
+  }, [sourceUrl, dispatch, receivePing])
 }

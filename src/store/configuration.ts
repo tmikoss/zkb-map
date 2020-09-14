@@ -12,5 +12,5 @@ type State = {
 
 export const useConfiguration = create<State>(set => ({
   cameraMode: CameraMode.full,
-  setCameraMode: (mode) => set(state => ({ ...state, cameraMode: mode }))
+  setCameraMode: (mode) => set({ cameraMode: mode })
 }))
