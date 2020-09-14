@@ -46,7 +46,7 @@ const Camera: React.FC<{
   killmails: React.MutableRefObject<Killmail[]>
 }> = React.memo(({ solarSystems, killmails }) => {
   const mode = useConfiguration(useCallback(state => state.cameraMode, []))
-  const ref = useRef<THREE.Camera>()
+  const ref = useRef<THREE.PerspectiveCamera>()
   const position = useRef(defaultPosition)
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const Camera: React.FC<{
 
   useFrame(() => {
     if (ref.current && position.current) {
-      let target = position.current
+      let target: THREE.Vector3
 
       const count = killmails.current?.length || 0
 
@@ -126,7 +126,16 @@ const Camera: React.FC<{
           )
 
           target = new THREE.Vector3(x, y, z + radius * 1.1)
+        } else {
+          target = position.current.clone()
         }
+      } else {
+        target = position.current.clone()
+      }
+
+      if (ref.current.aspect < 1) {
+        // for taller-than-wider screens, the default fitment doesn't work. so we "zoom out" by scaling along z axis
+        target.multiply(new THREE.Vector3(1, 1, 1 / ref.current.aspect))
       }
 
       ref.current.position.lerp(target, movementMultiplier)
