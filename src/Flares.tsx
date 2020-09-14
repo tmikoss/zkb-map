@@ -49,4 +49,4 @@ const Flares: React.FC<{
   return <Points ref={pointsRef} />
 }
 
-export default React.memo(Flares)
+export default Flares

@@ -5,7 +5,8 @@ export const theme = {
   flare: '#E60000',
   text: '#E6E6E6',
   unit: 32,
-  gapSize: 8
+  gapSize: 8,
+  regionFontSize: 8
 }
 
 export type Theme = typeof theme

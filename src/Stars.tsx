@@ -47,4 +47,4 @@ const Stars: React.FC<{
   return <Points ref={pointsRef} />
 }
 
-export default React.memo(Stars)
+export default Stars

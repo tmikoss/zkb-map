@@ -13,6 +13,7 @@ import Camera from './Camera'
 import sortBy from 'lodash/sortBy'
 import reduce from 'lodash/reduce'
 import Effects from './Effects'
+import RegionNames from './RegionNames'
 
 const devMode = process.env.NODE_ENV === 'development'
 
@@ -52,6 +53,7 @@ const Visuals: React.FC<{
 
       <Stars solarSystems={solarSystems} />
       <Flares solarSystems={solarSystems} killmails={killmails} />
+      <RegionNames solarSystems={solarSystems} />
 
       <Camera solarSystems={solarSystems} killmails={killmails} />
 

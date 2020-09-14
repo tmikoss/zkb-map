@@ -7,7 +7,7 @@ import { CameraMode } from './hooks/configuration'
 const Container = styled.div`
   color: ${({ theme }) => theme.text};
   display: grid;
-  grid-template-areas: "fullscreen connection camera";
+  grid-template-areas: "fullscreen connection camera regions";
   grid-auto-columns: ${({ theme }) => theme.unit}px;
   grid-auto-rows: ${({ theme }) => theme.unit}px;
   gap: ${({ theme }) => theme.gapSize}px;
@@ -61,7 +61,6 @@ const cameraTitles: Record<CameraMode, string> = {
   [CameraMode.follow]: 'Camera: follow the action'
 }
 
-
 const CameraStatus: React.FC = () => {
   const mode = useConfiguration(useCallback(state => state.cameraMode, []))
   const update = useConfiguration(useCallback(state => state.setCameraMode, []))
@@ -76,11 +75,21 @@ const CameraStatus: React.FC = () => {
   </FlatButton>
 }
 
+const RegionNames: React.FC = () => {
+  const enabled = useConfiguration(useCallback(state => state.showRegionNames, []))
+  const toggle = useConfiguration(useCallback(state => state.toggleRegionNames, []))
+
+  return <FlatButton type='button' title={enabled ? 'Region names shown' : 'Region names hidden'} onClick={toggle} area='regions'>
+    <FontAwesomeIcon icon={enabled ? 'list-alt' : 'list'} />
+  </FlatButton>
+}
+
 const Controls: React.FC = () => {
   return <Container>
     <FullscreenToggle />
     <ConnectionStatus />
     <CameraStatus />
+    <RegionNames />
   </Container>
 }
 
