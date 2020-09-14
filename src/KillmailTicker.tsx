@@ -42,7 +42,8 @@ const Image: React.FC<{
   </ImageLink>
 }
 
-const animationInterval = 1000
+const animationStepNormal = 1000
+const animationStepFast = 250
 
 const KillmailEntry: React.FC<{
   killmail: Killmail
@@ -53,21 +54,23 @@ const KillmailEntry: React.FC<{
   const [{ height, paddingBottom, opacity }, set] = useSpring(() => ({ opacity: 0, height: 0, paddingBottom: 0 }))
 
   useEffect(() => {
+    const height = unit
+    const paddingBottom = unit / 8
     const animate = () => {
       const age = differenceInMilliseconds(new Date(), receivedAt)
       if (age < killmailFullyVisibleMs) {
-        set({ opacity: 1, height: unit, paddingBottom: unit / 8, config: { duration: 250 } })
+        set({ opacity: 1, height, paddingBottom, config: { duration: animationStepFast } })
       } else {
         const opacity = ageMultiplier(age, scaledValue)
         if (opacity > 0.1) {
-          set({ opacity, height: unit, paddingBottom: unit / 8, config: { duration: animationInterval } })
+          set({ opacity, height, paddingBottom, config: { duration: animationStepNormal } })
         } else {
-          set({ opacity: 0, height: 0, paddingBottom: 0, config: { duration: 250 } })
+          set({ opacity: 0, height: 0, paddingBottom: 0, config: { duration: animationStepFast } })
         }
       }
     }
 
-    const interval = setInterval(animate, animationInterval)
+    const interval = setInterval(animate, animationStepNormal)
     animate()
     return () => clearInterval(interval)
   }, [set, receivedAt, scaledValue, unit])
