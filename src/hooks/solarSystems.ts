@@ -1,7 +1,7 @@
 import create from 'zustand'
-import { combine } from 'zustand/middleware'
 import reduce from 'lodash/reduce'
 import clamp from 'lodash/clamp'
+import { useEffect } from 'react'
 
 interface RawSolarSystem {
   x: number
@@ -29,17 +29,14 @@ type State = {
   systems: Record<string, SolarSystem>,
   regions: Record<string, Region>,
   loaded: boolean,
-  load: (url: string) => void
+  receive: (data: UniverseApiResponse) => void
 }
 
 export const useSolarSystems = create<State>(set => ({
   systems: {},
   regions: {},
   loaded: false,
-  load: async (url: string) => {
-    const response = await fetch(url)
-    const data: UniverseApiResponse = await response.json()
-
+  receive: (data: UniverseApiResponse) => {
     const regions = reduce(data.regions, (state, region, id) => {
       const { x, y, z, n } = region
       state[id] = {
@@ -70,3 +67,21 @@ export const useSolarSystems = create<State>(set => ({
     set({ regions, systems, loaded: true })
   }
 }))
+
+const selectLoaded = (state: State) => state.loaded
+const selectReceive = (state: State) => state.receive
+
+export const useSolarSystemData = (sourceUrl: string): void => {
+  const loaded = useSolarSystems(selectLoaded)
+  const receive = useSolarSystems(selectReceive)
+
+  useEffect(() => {
+    if (!loaded) {
+      const abortController = new AbortController()
+
+      fetch(sourceUrl, { signal: abortController.signal }).then(res => res.json()).then(receive)
+
+      return () => abortController.abort()
+    }
+  }, [sourceUrl, loaded, receive])
+}

@@ -6,7 +6,7 @@ import { theme } from './utils/theme'
 import Stars from './Stars'
 import Flares from './Flares'
 import KillmailTicker from './KillmailTicker'
-import { useKillmails, useSolarSystems, useConnectionStatus, useKillmailMonitor } from './hooks'
+import { useKillmails, useSolarSystems, useConnectionStatus, useKillmailMonitor, useSolarSystemData } from './hooks'
 import DevTools from './DevTools'
 import Controls from './Controls'
 import Camera from './Camera'
@@ -62,13 +62,8 @@ const Visuals: React.FC<{
 
 const App: React.FC<{}> = () => {
   useKillmailMonitor('wss://zkillboard.com/websocket/')
+  useSolarSystemData(process.env.PUBLIC_URL + '/data/universe.json')
   useConnectionStatus()
-
-  const loadUniverse = useSolarSystems(useCallback(state => state.load, []))
-
-  useEffect(() => {
-    loadUniverse(process.env.PUBLIC_URL + '/data/universe.json')
-  }, [loadUniverse])
 
   const killmailsRef = useRef<Killmail[]>([])
 
