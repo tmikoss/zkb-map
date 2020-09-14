@@ -6,6 +6,15 @@ interface SolarSystem {
   z: number
   radius: number
   security: number
+  regionId: number
+}
+
+interface Region {
+  id: number
+  name: string
+  x: number
+  y: number
+  z: number
 }
 
 interface Killmail {

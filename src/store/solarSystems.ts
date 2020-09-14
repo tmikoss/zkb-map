@@ -1,5 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import each from 'lodash/each'
+import create from 'zustand'
+import { combine } from 'zustand/middleware'
+import reduce from 'lodash/reduce'
 import clamp from 'lodash/clamp'
 
 interface RawSolarSystem {
@@ -9,40 +10,62 @@ interface RawSolarSystem {
   r: number
   s: number
   n: string
+  p: number
 }
 
-type SolarSystemApiResponse = Record<string, RawSolarSystem>
+interface RawRegion {
+  x: number
+  y: number
+  z: number
+  n: string
+}
 
-export const fetchSolarSystems = createAsyncThunk<SolarSystemApiResponse, void>(
-  'solarSystems/fetch',
-  async () => {
-    const response = await fetch(process.env.PUBLIC_URL + '/data/solarSystems.json')
-    const data: SolarSystemApiResponse = await response.json()
-    return data
-  }
-)
+type UniverseApiResponse = {
+  systems: Record<string, RawSolarSystem>,
+  regions: Record<string, RawRegion>
+}
 
-const slice = createSlice({
-  name: 'solarSystems',
-  initialState: {} as Record<string, SolarSystem>,
-  reducers: {},
-  extraReducers: builder => {
-    builder.addCase(fetchSolarSystems.fulfilled, (state, action) => {
-      const raw = action.payload
-      each(raw, (rawSolarSystem, id) => {
-        const { x, y, z, n, r, s } = rawSolarSystem
-        state[id] = {
-          id: parseInt(id),
-          x,
-          y: z,
-          z: y,
-          name: n,
-          radius: clamp(r * 100, 0.5, 1.5),
-          security: s
-        }
-      })
+export const useSolarSystems = create(
+  combine(
+    {
+      systems: ({} as Record<string, SolarSystem>),
+      regions: ({} as Record<string, Region>),
+      loaded: false
+    },
+    set => ({
+      load: async (url: string) => {
+        const response = await fetch(url)
+        const data: UniverseApiResponse = await response.json()
+
+        const regions = reduce(data.regions, (state, region, id) => {
+          const { x, y, z, n } = region
+          state[id] = {
+            id: parseInt(id),
+            x,
+            y: z,
+            z: y,
+            name: n
+          }
+          return state
+        }, {} as Record<string, Region>)
+
+        const systems = reduce(data.systems, (state, system, id) => {
+          const { x, y, z, n, r, s, p } = system
+          state[id] = {
+            id: parseInt(id),
+            x,
+            y: z,
+            z: y,
+            name: n,
+            radius: clamp(r * 100, 0.5, 1.5),
+            security: s,
+            regionId: p
+          }
+          return state
+        }, {} as Record<string, SolarSystem>)
+
+        set({ regions, systems, loaded: true })
+      }
     })
-  }
-})
-
-export default slice.reducer
+  )
+)

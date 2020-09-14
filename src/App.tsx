@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useCallback } from 'react'
 import { useKillmails } from './useKillmails'
 import styled, { createGlobalStyle, ThemeProvider, ThemeContext } from 'styled-components'
 import reset from 'styled-reset'
@@ -7,7 +7,7 @@ import { theme } from './utils/theme'
 import Stars from './Stars'
 import Flares from './Flares'
 import KillmailTicker from './KillmailTicker'
-import { useAppSelector, fetchSolarSystems, useAppDispatch } from './store'
+import { useAppSelector, useSolarSystems } from './store'
 import DevTools from './DevTools'
 import { useConnectionStatus } from './useConnectionStatus'
 import Controls from './Controls'
@@ -45,19 +45,17 @@ const TopRight = styled.div`
 `
 
 const App: React.FC<{}> = () => {
-  const dispatch = useAppDispatch()
-
   useKillmails({ sourceUrl: 'wss://zkillboard.com/websocket/', preloadRecent: devMode })
 
   useConnectionStatus()
 
-  useEffect(() => {
-    dispatch(fetchSolarSystems())
-  }, [dispatch])
+  const loadUniverse = useSolarSystems(useCallback(state => state.load, []))
+
+  useEffect(() => loadUniverse(process.env.PUBLIC_URL + '/data/universe.json'), [loadUniverse])
 
   const killmailsRef = useRef<Killmail[]>([])
 
-  const solarSystems = useAppSelector(state => state.solarSystems)
+  const solarSystems = useSolarSystems(useCallback(state => state.systems, []))
   const killmails = useAppSelector(state => {
     const inCurrentSystems = reduce(state.killmails, (arr, km) => {
       if (solarSystems[km.solarSystemId]) {

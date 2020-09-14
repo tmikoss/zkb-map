@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import styled from 'styled-components'
-import { useAppDispatch, receiveKillmail, useAppSelector } from './store'
+import { useAppDispatch, receiveKillmail, useSolarSystems } from './store'
 import { Stats } from 'drei'
 import random from 'lodash/random'
 import sample from 'lodash/sample'
@@ -42,7 +42,7 @@ const buildTestKillmail = (value: number, solarSystemId: string) => {
 
 const DevTools: React.FC<{}> = () => {
   const statsContainer = useRef(null)
-  const solarSystems = useAppSelector(state => state.solarSystems)
+  const solarSystems = useSolarSystems(useCallback(state => state.systems, []))
   const dispatch = useAppDispatch()
   const [activityInterval, setAcitivtyInterval] = useState(1000)
 
