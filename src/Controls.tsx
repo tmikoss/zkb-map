@@ -64,11 +64,11 @@ const cameraTitles: Record<CameraMode, string> = {
 
 const CameraStatus: React.FC = () => {
   const mode = useConfiguration(state => state.cameraMode)
-  const update = useConfiguration(state => state.update)
+  const update = useConfiguration(state => state.setCameraMode)
 
   const onClick = () => {
     const nextCameraMode = nextCameraModes[mode]
-    update({ cameraMode: nextCameraMode })
+    update(nextCameraMode)
   }
 
   return <FlatButton type='button' title={cameraTitles[mode]} onClick={onClick} area='camera'>

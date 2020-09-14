@@ -25,47 +25,48 @@ type UniverseApiResponse = {
   regions: Record<string, RawRegion>
 }
 
-export const useSolarSystems = create(
-  combine(
-    {
-      systems: ({} as Record<string, SolarSystem>),
-      regions: ({} as Record<string, Region>),
-      loaded: false
-    },
-    set => ({
-      load: async (url: string) => {
-        const response = await fetch(url)
-        const data: UniverseApiResponse = await response.json()
+type State = {
+  systems: Record<string, SolarSystem>,
+  regions: Record<string, Region>,
+  loaded: boolean,
+  load: (url: string) => void
+}
 
-        const regions = reduce(data.regions, (state, region, id) => {
-          const { x, y, z, n } = region
-          state[id] = {
-            id: parseInt(id),
-            x,
-            y: z,
-            z: y,
-            name: n
-          }
-          return state
-        }, {} as Record<string, Region>)
+export const useSolarSystems = create<State>(set => ({
+  systems: {},
+  regions: {},
+  loaded: false,
+  load: async (url: string) => {
+    const response = await fetch(url)
+    const data: UniverseApiResponse = await response.json()
 
-        const systems = reduce(data.systems, (state, system, id) => {
-          const { x, y, z, n, r, s, p } = system
-          state[id] = {
-            id: parseInt(id),
-            x,
-            y: z,
-            z: y,
-            name: n,
-            radius: clamp(r * 100, 0.5, 1.5),
-            security: s,
-            regionId: p
-          }
-          return state
-        }, {} as Record<string, SolarSystem>)
-
-        set({ regions, systems, loaded: true })
+    const regions = reduce(data.regions, (state, region, id) => {
+      const { x, y, z, n } = region
+      state[id] = {
+        id: parseInt(id),
+        x,
+        y: z,
+        z: y,
+        name: n
       }
-    })
-  )
-)
+      return state
+    }, {} as Record<string, Region>)
+
+    const systems = reduce(data.systems, (state, system, id) => {
+      const { x, y, z, n, r, s, p } = system
+      state[id] = {
+        id: parseInt(id),
+        x,
+        y: z,
+        z: y,
+        name: n,
+        radius: clamp(r * 100, 0.5, 1.5),
+        security: s,
+        regionId: p
+      }
+      return state
+    }, {} as Record<string, SolarSystem>)
+
+    set({ regions, systems, loaded: true })
+  }
+}))

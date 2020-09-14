@@ -1,22 +1,16 @@
 import create from 'zustand'
-import { combine } from 'zustand/middleware'
 
 export enum CameraMode {
   full,
   follow
 }
 
-interface State {
-  cameraMode: CameraMode
+type State = {
+  cameraMode: CameraMode,
+  setCameraMode: (mode: CameraMode) => void
 }
 
-export const useConfiguration = create(
-  combine(
-    {
-      cameraMode: CameraMode.full
-    },
-    set => ({
-      update: (payload: Partial<State>) => set(state => ({ ...state, ...payload }))
-    })
-  )
-)
+export const useConfiguration = create<State>(set => ({
+  cameraMode: CameraMode.full,
+  setCameraMode: (mode) => set(state => ({ ...state, cameraMode: mode }))
+}))

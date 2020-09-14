@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react'
+import React, { useRef, useEffect, useCallback, memo } from 'react'
 import { useKillmails } from './useKillmails'
 import styled, { createGlobalStyle, ThemeProvider, ThemeContext } from 'styled-components'
 import reset from 'styled-reset'
@@ -44,6 +44,24 @@ const TopRight = styled.div`
   right: 1vmin;
 `
 
+const Visuals: React.FC<{
+  solarSystems: Record<string, SolarSystem>
+  killmails: React.MutableRefObject<Killmail[]>
+}> = memo(({ solarSystems, killmails }) => {
+  return <Canvas onCreated={({ gl }) => gl.setClearColor(theme.background)}>
+    <ThemeContext.Provider value={theme}>
+      <ambientLight />
+
+      <Stars solarSystems={solarSystems} />
+      <Flares solarSystems={solarSystems} killmails={killmails} />
+
+      <Camera solarSystems={solarSystems} killmails={killmails} />
+
+      <Effects />
+    </ThemeContext.Provider>
+  </Canvas>
+})
+
 const App: React.FC<{}> = () => {
   useKillmails({ sourceUrl: 'wss://zkillboard.com/websocket/', preloadRecent: devMode })
 
@@ -51,11 +69,14 @@ const App: React.FC<{}> = () => {
 
   const loadUniverse = useSolarSystems(useCallback(state => state.load, []))
 
-  useEffect(() => loadUniverse(process.env.PUBLIC_URL + '/data/universe.json'), [loadUniverse])
+  useEffect(() => {
+    loadUniverse(process.env.PUBLIC_URL + '/data/universe.json')
+  }, [loadUniverse])
 
   const killmailsRef = useRef<Killmail[]>([])
 
   const solarSystems = useSolarSystems(useCallback(state => state.systems, []))
+
   const killmails = useAppSelector(state => {
     const inCurrentSystems = reduce(state.killmails, (arr, km) => {
       if (solarSystems[km.solarSystemId]) {
@@ -73,18 +94,7 @@ const App: React.FC<{}> = () => {
   return <ThemeProvider theme={theme}>
     <GlobalStyle />
 
-    <Canvas onCreated={({ gl }) => gl.setClearColor(theme.background)}>
-      <ThemeContext.Provider value={theme}>
-        <ambientLight />
-
-        <Stars solarSystems={solarSystems} />
-        <Flares solarSystems={solarSystems} killmails={killmailsRef} />
-
-        <Camera solarSystems={solarSystems} killmails={killmailsRef} />
-
-        <Effects />
-      </ThemeContext.Provider>
-    </Canvas>
+    <Visuals solarSystems={solarSystems} killmails={killmailsRef} />
 
     <TopLeft>
       <KillmailTicker killmails={killmails} />
