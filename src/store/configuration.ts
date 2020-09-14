@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import create from 'zustand'
+import { combine } from 'zustand/middleware'
 
 export enum CameraMode {
   full,
@@ -9,19 +10,13 @@ interface State {
   cameraMode: CameraMode
 }
 
-const initialState: State = {
-  cameraMode: CameraMode.follow
-}
-
-const slice = createSlice({
-  name: 'configuration',
-  initialState: initialState,
-  reducers: {
-    updateConfiguration: (state, action: PayloadAction<Partial<State>>) => {
-      return { ...state, ...action.payload }
-    }
-  }
-})
-
-export const { updateConfiguration } = slice.actions
-export default slice.reducer
+export const useConfiguration = create(
+  combine(
+    {
+      cameraMode: CameraMode.full
+    },
+    set => ({
+      update: (payload: Partial<State>) => set(state => ({ ...state, ...payload }))
+    })
+  )
+)

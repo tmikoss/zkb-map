@@ -67,7 +67,6 @@ const App: React.FC<{}> = () => {
     }, [] as Killmail[])
     return sortBy(inCurrentSystems, 'receivedAt').reverse()
   })
-  const mode = useAppSelector(state => state.configuration.cameraMode)
 
   useEffect(() => {
     killmailsRef.current = killmails
@@ -83,7 +82,7 @@ const App: React.FC<{}> = () => {
         <Stars solarSystems={solarSystems} />
         <Flares solarSystems={solarSystems} killmails={killmailsRef} />
 
-        <Camera solarSystems={solarSystems} killmails={killmailsRef} mode={mode} />
+        <Camera solarSystems={solarSystems} killmails={killmailsRef} />
 
         <Effects />
       </ThemeContext.Provider>

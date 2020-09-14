@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { PerspectiveCamera } from 'drei'
 import * as THREE from 'three'
 import { CameraMode } from './store/configuration'
@@ -6,6 +6,7 @@ import { positionToArray, HasPosition } from './utils/geometry'
 import { useFrame } from 'react-three-fiber'
 import { ageMultiplier } from './utils/scaling'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
+import { useConfiguration } from './store'
 
 const near = 0.001
 const far = 100_000
@@ -42,9 +43,9 @@ const lookAtPoints = (points: HasPosition[]): THREE.Vector3 => {
 
 const Camera: React.FC<{
   solarSystems: Record<string, SolarSystem>,
-  killmails: React.MutableRefObject<Killmail[]>,
-  mode: CameraMode
-}> = React.memo(({ solarSystems, mode, killmails }) => {
+  killmails: React.MutableRefObject<Killmail[]>
+}> = React.memo(({ solarSystems, killmails }) => {
+  const mode = useConfiguration(useCallback(state => state.cameraMode, []))
   const ref = useRef<THREE.Camera>()
   const position = useRef(defaultPosition)
 

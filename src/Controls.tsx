@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { useAppDispatch, useAppSelector } from './store'
+import { useAppSelector } from './store'
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
-import { CameraMode } from './store/configuration'
-import { updateConfiguration } from './store'
+import { useConfiguration, CameraMode } from './store/configuration'
 
 const Container = styled.div`
   color: ${({ theme }) => theme.text};
@@ -62,20 +61,20 @@ const cameraTitles: Record<CameraMode, string> = {
   [CameraMode.follow]: 'Camera: follow the action'
 }
 
+
 const CameraStatus: React.FC = () => {
-  const mode = useAppSelector(state => state.configuration.cameraMode)
-  const dispatch = useAppDispatch()
+  const mode = useConfiguration(state => state.cameraMode)
+  const update = useConfiguration(state => state.update)
 
   const onClick = () => {
     const nextCameraMode = nextCameraModes[mode]
-    dispatch(updateConfiguration({ cameraMode: nextCameraMode }))
+    update({ cameraMode: nextCameraMode })
   }
 
   return <FlatButton type='button' title={cameraTitles[mode]} onClick={onClick} area='camera'>
     <FontAwesomeIcon icon={cameraIcon[mode]} />
   </FlatButton>
 }
-
 
 const Controls: React.FC = () => {
   return <Container>
