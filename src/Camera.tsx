@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { PerspectiveCamera } from 'drei'
 import * as THREE from 'three'
-import { CameraMode } from './store/configuration'
+import { CameraMode } from './hooks/configuration'
 import { positionToArray, HasPosition } from './utils/geometry'
 import { useFrame } from 'react-three-fiber'
 import { ageMultiplier } from './utils/scaling'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
-import { useConfiguration } from './store'
+import { useConfiguration } from './hooks'
 
 const near = 0.001
 const far = 100_000

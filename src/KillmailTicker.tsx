@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react'
 import styled from 'styled-components'
 import { ageMultiplier, killmailFullyVisibleMs } from './utils/scaling'
 import { animated, useSpring, OpaqueInterpolation } from 'react-spring'
-import { useAnimationFrame } from './useAnimationFrame'
+import { useAnimationFrame } from './hooks'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import { ThemeContext } from 'styled-components'
 

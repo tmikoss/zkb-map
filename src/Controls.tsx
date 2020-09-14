@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
-import { useConnection, useConfiguration } from './store'
+import { useConnection, useConfiguration } from './hooks'
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
-import { CameraMode } from './store/configuration'
+import { CameraMode } from './hooks/configuration'
 
 const Container = styled.div`
   color: ${({ theme }) => theme.text};

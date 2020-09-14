@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import styled from 'styled-components'
-import { useSolarSystems, useKillmails } from './store'
+import { useSolarSystems, useKillmails } from './hooks'
 import { Stats } from 'drei'
 import random from 'lodash/random'
 import sample from 'lodash/sample'
