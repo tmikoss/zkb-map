@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useCallback, memo } from 'react'
-import { useKillmails } from './useKillmails'
 import styled, { createGlobalStyle, ThemeProvider, ThemeContext } from 'styled-components'
 import reset from 'styled-reset'
 import { Canvas } from 'react-three-fiber'
@@ -7,7 +6,7 @@ import { theme } from './utils/theme'
 import Stars from './Stars'
 import Flares from './Flares'
 import KillmailTicker from './KillmailTicker'
-import { useAppSelector, useSolarSystems, useConnectionStatus } from './store'
+import { useKillmails, useSolarSystems, useConnectionStatus, useKillmailMonitor } from './store'
 import DevTools from './DevTools'
 import Controls from './Controls'
 import Camera from './Camera'
@@ -62,8 +61,7 @@ const Visuals: React.FC<{
 })
 
 const App: React.FC<{}> = () => {
-  useKillmails({ sourceUrl: 'wss://zkillboard.com/websocket/', preloadRecent: devMode })
-
+  useKillmailMonitor('wss://zkillboard.com/websocket/')
   useConnectionStatus()
 
   const loadUniverse = useSolarSystems(useCallback(state => state.load, []))
@@ -76,7 +74,7 @@ const App: React.FC<{}> = () => {
 
   const solarSystems = useSolarSystems(useCallback(state => state.systems, []))
 
-  const killmails = useAppSelector(state => {
+  const killmails = useKillmails(useCallback(state => {
     const inCurrentSystems = reduce(state.killmails, (arr, km) => {
       if (solarSystems[km.solarSystemId]) {
         arr.push(km)
@@ -84,7 +82,7 @@ const App: React.FC<{}> = () => {
       return arr
     }, [] as Killmail[])
     return sortBy(inCurrentSystems, 'receivedAt').reverse()
-  })
+  }, [solarSystems]))
 
   useEffect(() => {
     killmailsRef.current = killmails
