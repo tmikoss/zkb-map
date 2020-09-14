@@ -1,8 +1,7 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import { ageMultiplier, killmailFullyVisibleMs } from './utils/scaling'
 import { animated, useSpring, OpaqueInterpolation } from 'react-spring'
-import { useAnimationFrame } from './hooks'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import { ThemeContext } from 'styled-components'
 
@@ -43,28 +42,35 @@ const Image: React.FC<{
   </ImageLink>
 }
 
+const animationInterval = 1000
+
 const KillmailEntry: React.FC<{
   killmail: Killmail
 }> = React.memo(({ killmail }) => {
-  const theme = useContext(ThemeContext)
+  const { unit } = useContext(ThemeContext)
   const { characterId, corporationId, allianceId, shipTypeId, url, receivedAt, scaledValue } = killmail
 
-  const [{ opacity, height, paddingBottom }, set] = useSpring(() => ({ opacity: 0, height: 0, paddingBottom: 0 }))
+  const [{ height, paddingBottom, opacity }, set] = useSpring(() => ({ opacity: 0, height: 0, paddingBottom: 0 }))
 
-  const animationFrame = useCallback(() => {
-    const age = differenceInMilliseconds(new Date(), receivedAt)
-    let opacity = ageMultiplier(age, scaledValue)
-    let height: number
-    if (age < killmailFullyVisibleMs || opacity > 0.1) {
-      height = theme.unit
-    } else {
-      height = 0
-      opacity = 0
+  useEffect(() => {
+    const animate = () => {
+      const age = differenceInMilliseconds(new Date(), receivedAt)
+      if (age < killmailFullyVisibleMs) {
+        set({ opacity: 1, height: unit, paddingBottom: unit / 8, config: { duration: 250 } })
+      } else {
+        const opacity = ageMultiplier(age, scaledValue)
+        if (opacity > 0.1) {
+          set({ opacity, height: unit, paddingBottom: unit / 8, config: { duration: animationInterval } })
+        } else {
+          set({ opacity: 0, height: 0, paddingBottom: 0, config: { duration: 250 } })
+        }
+      }
     }
-    set({ opacity, height, paddingBottom: height / 8 })
-  }, [set, receivedAt, scaledValue, theme.unit])
 
-  useAnimationFrame(animationFrame)
+    const interval = setInterval(animate, animationInterval)
+    animate()
+    return () => clearInterval(interval)
+  }, [set, receivedAt, scaledValue, unit])
 
   return <EntryContainer style={{ opacity, paddingBottom, gridAutoRows: height }}>
     {shipTypeId && <Image
@@ -72,28 +78,28 @@ const KillmailEntry: React.FC<{
       area='ship'
       height={height}
       href={url}
-      size={theme.unit}
+      size={unit}
     />}
     {characterId && <Image
       src={`https://images.evetech.net/characters/${characterId}/portrait`}
       area='character'
       height={height}
       href={`https://zkillboard.com/character/${characterId}/`}
-      size={theme.unit}
+      size={unit}
     />}
     {corporationId && <Image
       src={`https://images.evetech.net/corporations/${corporationId}/logo`}
       area='corporation'
       height={height}
       href={`https://zkillboard.com/corporation/${corporationId}/`}
-      size={theme.unit}
+      size={unit}
     />}
     {allianceId && <Image
       src={`https://images.evetech.net/alliances/${allianceId}/logo`}
       area='alliance'
       height={height}
       href={`https://zkillboard.com/alliance/${allianceId}/`}
-      size={theme.unit}
+      size={unit}
     />}
   </EntryContainer>
 })
