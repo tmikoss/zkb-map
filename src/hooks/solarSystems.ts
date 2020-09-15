@@ -1,7 +1,7 @@
 import create from 'zustand'
 import reduce from 'lodash/reduce'
-import clamp from 'lodash/clamp'
 import { useEffect } from 'react'
+import * as THREE from 'three'
 
 interface RawSolarSystem {
   x: number
@@ -57,7 +57,7 @@ export const useSolarSystems = create<State>(set => ({
         y: z,
         z: y,
         name: n,
-        radius: clamp(r * 100, 0.5, 1.5),
+        radius: THREE.MathUtils.clamp(r * 100, 0.5, 1.5),
         security: s,
         regionId: p
       }

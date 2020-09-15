@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { CameraMode } from './hooks/configuration'
 import { positionToArray, HasPosition } from './utils/geometry'
 import { useFrame } from 'react-three-fiber'
-import { ageMultiplier } from './utils/scaling'
+import { effectiveMultiplier } from './utils/scaling'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import { useConfiguration } from './hooks'
 
@@ -87,7 +87,7 @@ const Camera: React.FC<{
           const { x, y, z } = solarSystems[solarSystemId]
 
           const age = differenceInMilliseconds(now, receivedAt)
-          const scale = scaledValue * ageMultiplier(age, scaledValue)
+          const scale = effectiveMultiplier(age, scaledValue)
 
           if (scale > 0.1) {
             const scaledX = scale * x

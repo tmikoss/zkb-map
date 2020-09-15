@@ -14,6 +14,10 @@ export const ageMultiplier = (age: number, scale: number): number => {
   }
 }
 
+export const effectiveMultiplier = (age: number, scale: number): number => {
+  return scale * ageMultiplier(age, scale)
+}
+
 const minValueBound = 10_000
 const maxValueBound = 10_000_000_000
 const minValueMultiplier = 1

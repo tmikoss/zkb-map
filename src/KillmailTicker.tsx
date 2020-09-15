@@ -1,9 +1,10 @@
 import React, { useContext, useEffect } from 'react'
 import styled from 'styled-components'
-import { ageMultiplier, killmailFullyVisibleMs } from './utils/scaling'
+import { effectiveMultiplier, killmailFullyVisibleMs } from './utils/scaling'
 import { animated, useSpring, OpaqueInterpolation } from 'react-spring'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import { ThemeContext } from 'styled-components'
+import * as THREE from 'three'
 
 const TickerContainer = styled.div`
   overflow: hidden;
@@ -61,7 +62,7 @@ const KillmailEntry: React.FC<{
       if (age < killmailFullyVisibleMs) {
         set({ opacity: 1, height, paddingBottom, config: { duration: animationStepFast } })
       } else {
-        const opacity = ageMultiplier(age, scaledValue)
+        const opacity = THREE.MathUtils.clamp(effectiveMultiplier(age, scaledValue), 0, 1)
         if (opacity > 0.1) {
           set({ opacity, height, paddingBottom, config: { duration: animationStepNormal } })
         } else {

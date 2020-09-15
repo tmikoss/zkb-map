@@ -2,7 +2,7 @@ import React, { useRef, useContext } from 'react'
 import { useFrame } from 'react-three-fiber'
 import * as THREE from 'three'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
-import { ageMultiplier, useMinViewportSize } from './utils/scaling'
+import { effectiveMultiplier, useMinViewportSize } from './utils/scaling'
 import { buildAttributes, setAttributes, positionToArray } from './utils/geometry'
 import Points from './Points'
 import { ThemeContext } from 'styled-components'
@@ -36,7 +36,7 @@ const Flares: React.FC<{
       const solarSystem = solarSystems[solarSystemId] || {}
 
       const age = differenceInMilliseconds(now, receivedAt)
-      scales[index] = baseFlareSize * scaledValue * ageMultiplier(age, scaledValue)
+      scales[index] = baseFlareSize * effectiveMultiplier(age, scaledValue)
 
       positionToArray(solarSystem, positions, index)
 
