@@ -11,7 +11,7 @@ const viewportRelativeScale = 75
 const Stars: React.FC<{
   solarSystems: Record<string, SolarSystem>
 }> = ({ solarSystems }) => {
-  const pointsRef = useRef<THREE.Points>()
+  const pointsRef = useRef<THREE.Points<THREE.BufferGeometry>>(null)
 
   const theme = useContext(ThemeContext)
 

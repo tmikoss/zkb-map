@@ -35,7 +35,7 @@ const uniforms = {
   pointTexture: { value: flareTexture }
 }
 
-const Points = forwardRef((_props, ref) => <points ref={ref as any}>
+const Points = forwardRef<THREE.Points<THREE.BufferGeometry>>((props, ref) => <points ref={ref} {...props} >
   <bufferGeometry attach='geometry' />
   <shaderMaterial
     uniforms={uniforms}

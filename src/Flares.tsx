@@ -11,7 +11,7 @@ const Flares: React.FC<{
   solarSystems: Record<string, SolarSystem>
   killmails: React.MutableRefObject<Killmail[]>
 }> = ({ solarSystems, killmails }) => {
-  const pointsRef = useRef<THREE.Points>()
+  const pointsRef = useRef<THREE.Points<THREE.BufferGeometry>>(null)
 
   const theme = useContext(ThemeContext)
 
