@@ -1,10 +1,11 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, memo, useRef } from 'react'
 import styled from 'styled-components'
 import { effectiveMultiplier, killmailFullyVisibleMs } from './utils/scaling'
 import { animated, useSpring, OpaqueInterpolation } from 'react-spring'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import { ThemeContext } from 'styled-components'
 import * as THREE from 'three'
+import { useKillmails } from './hooks'
 
 const TickerContainer = styled.div`
   overflow: hidden;
@@ -45,30 +46,49 @@ const Image: React.FC<{
 
 const animationStepNormal = 1000
 const animationStepFast = 250
+const animationStepInstant = 50
 
 const KillmailEntry: React.FC<{
   killmail: Killmail
-}> = React.memo(({ killmail }) => {
+}> = memo(({ killmail }) => {
   const { unit } = useContext(ThemeContext)
-  const { characterId, corporationId, allianceId, shipTypeId, url, receivedAt, scaledValue } = killmail
+  const { id, characterId, corporationId, allianceId, shipTypeId, url, receivedAt, scaledValue } = killmail
 
   const [{ height, paddingBottom, opacity }, set] = useSpring(() => ({ opacity: 0, height: 0, paddingBottom: 0 }))
 
+  const isFocused = useRef(false)
+  useEffect(() => useKillmails.subscribe(state => {
+    isFocused.current = state.focused ? state.focused.id === id : false
+  }))
+
   useEffect(() => {
-    const height = unit
-    const paddingBottom = unit / 8
     const animate = () => {
       const age = differenceInMilliseconds(new Date(), receivedAt)
-      if (age < killmailFullyVisibleMs) {
-        set({ opacity: 1, height, paddingBottom, config: { duration: animationStepFast } })
+      let opacity: number
+      let height = unit
+      let paddingBottom = unit / 8
+      let duration = animationStepNormal
+
+      if (age < killmailFullyVisibleMs) { // very new, fade in animation
+        opacity = 1
+        duration = animationStepFast
       } else {
-        const opacity = THREE.MathUtils.clamp(effectiveMultiplier(age, scaledValue), 0, 1)
-        if (opacity > 0.1) {
-          set({ opacity, height, paddingBottom, config: { duration: animationStepNormal } })
-        } else {
-          set({ opacity: 0, height: 0, paddingBottom: 0, config: { duration: animationStepFast } })
+        const multiplier = effectiveMultiplier(age, scaledValue)
+        if (multiplier > 0.1) { // reasonably new, keep visible
+          if (isFocused.current) { // is being hovered - keep max brightness
+            opacity = 1
+          } else { // slowly fade out as multiplier drops
+            opacity = THREE.MathUtils.clamp(multiplier, 0, 1)
+          }
+        } else { // old, fade it out
+          opacity = 0
+          height = 0
+          paddingBottom = 0
+          duration = animationStepFast
         }
       }
+
+      set({ opacity, height, paddingBottom, config: { duration } })
     }
 
     const interval = setInterval(animate, animationStepNormal)
@@ -76,7 +96,16 @@ const KillmailEntry: React.FC<{
     return () => clearInterval(interval)
   }, [set, receivedAt, scaledValue, unit])
 
-  return <EntryContainer style={{ opacity, paddingBottom, gridAutoRows: height }}>
+  const focus = useKillmails(useCallback(state => state.focus, []))
+  const unfocus = useKillmails(useCallback(state => state.unfocus, []))
+
+  const onMouseEnter = useCallback(() => {
+    set({ opacity: 1, config: { duration: animationStepInstant } })
+    focus(id)
+  }, [focus, id, set])
+  const onMouseLeave = useCallback(() => unfocus(id), [unfocus, id])
+
+  return <EntryContainer style={{ opacity, paddingBottom, gridAutoRows: height }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
     {shipTypeId && <Image
       src={`https://images.evetech.net/types/${shipTypeId}/render`}
       area='ship'

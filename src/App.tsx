@@ -14,6 +14,7 @@ import sortBy from 'lodash/sortBy'
 import reduce from 'lodash/reduce'
 import Effects from './Effects'
 import RegionNames from './RegionNames'
+import FocusIndicator from './FocusIndicator'
 
 const devMode = process.env.NODE_ENV === 'development'
 
@@ -54,6 +55,7 @@ const Visuals: React.FC<{
       <Stars solarSystems={solarSystems} />
       <Flares solarSystems={solarSystems} killmails={killmails} />
       <RegionNames solarSystems={solarSystems} />
+      <FocusIndicator />
 
       <Camera solarSystems={solarSystems} killmails={killmails} />
 

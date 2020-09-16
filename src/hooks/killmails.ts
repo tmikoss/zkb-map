@@ -46,8 +46,11 @@ type WebsocketMessage = WebsocketKillmail | WebsocketStatusMessage
 
 type State = {
   killmails: Record<string, Killmail>,
+  focused?: Killmail,
   receiveKillmail: (killmail: Killmail) => void,
-  trimKillmails: () => void
+  trimKillmails: () => void,
+  focus: (id: Killmail['id']) => void,
+  unfocus: (id: Killmail['id']) => void
 }
 
 const shouldKeep = (now: Date, killmail: Killmail) => {
@@ -84,11 +87,21 @@ const parseKillmail = (raw: WebsocketKillmail): Killmail => {
 
 export const useKillmails = create<State>(set => ({
   killmails: {},
+  focused: undefined,
   receiveKillmail: (killmail) => { set(state => ({ killmails: { ...state.killmails, [killmail.id]: killmail } })) },
   trimKillmails: () => {
     const shouldKeepNow = shouldKeep.bind(undefined, new Date())
-    set(state => ({ killmails: pickBy(state.killmails, shouldKeepNow) }))
-  }
+    set(state => {
+      const killmails = pickBy(state.killmails, shouldKeepNow)
+      const changes: Partial<State> = { killmails }
+      if (state.focused && !killmails[state.focused.id]) {
+        changes.focused = undefined
+      }
+      return changes
+    })
+  },
+  focus: (id) => { set(state => ({ focused: state.killmails[id] })) },
+  unfocus: (id) => { set(state => state.focused && state.focused.id === id ? { focused: undefined } : {}) }
 }))
 
 export const useKillmailMonitor = (sourceUrl: string): void => {
