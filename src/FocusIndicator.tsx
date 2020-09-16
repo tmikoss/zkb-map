@@ -19,8 +19,10 @@ interface TroikaTextObject {
 
 const FocusIndicator: React.FC = () => {
   const solarSystems = useSolarSystems(useCallback(state => state.systems, []))
+  const regions = useSolarSystems(useCallback(state => state.regions, []))
   const focusedKillmail = useRef<Killmail>()
   const focusedSolarSystem = useRef<SolarSystem>()
+  const focusedRegion = useRef<Region>()
   const theme = useContext(ThemeContext)
   const lineRef = useRef<THREE.Line<THREE.BufferGeometry>>(null)
   const textRef = useRef<TroikaTextObject>(null)
@@ -30,6 +32,7 @@ const FocusIndicator: React.FC = () => {
   useEffect(() => useKillmails.subscribe(state => {
     focusedKillmail.current = state.focused
     focusedSolarSystem.current = state.focused ? solarSystems[state.focused.solarSystemId] : undefined
+    focusedRegion.current = focusedSolarSystem.current ? regions[focusedSolarSystem.current.regionId] : undefined
   }))
 
   useFrame(() => {
@@ -66,7 +69,12 @@ const FocusIndicator: React.FC = () => {
       const yHorizontal = yStart + offsetY * 3
       const zHorizontal = zStart + offsetZ * 3
 
-      text = `${stringifyPrice(totalValue)} ${name}`
+      let locationName = name
+      if (focusedRegion.current) {
+        locationName = `${name}, ${focusedRegion.current.name}`
+      }
+
+      text = `${stringifyPrice(totalValue)} ${locationName}`
       textX = xHorizontalStart
       textY = yHorizontal
       textZ = zHorizontal
