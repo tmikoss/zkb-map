@@ -20,6 +20,7 @@ const FlatButton = styled.button<{ area: string }>`
   border: none;
   grid-area: ${({ area }) => area};
   cursor: ${({ onClick }) => onClick ? 'pointer' : 'default'};
+  outline: none;
 `
 
 const FullscreenToggle: React.FC = () => {

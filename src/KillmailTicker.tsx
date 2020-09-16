@@ -57,6 +57,7 @@ const KillmailEntry: React.FC<{
   const [{ height, paddingBottom, opacity }, set] = useSpring(() => ({ opacity: 0, height: 0, paddingBottom: 0 }))
 
   const isFocused = useRef(false)
+  const isActive = useRef(true)
   useEffect(() => useKillmails.subscribe(state => {
     isFocused.current = state.focused ? state.focused.id === id : false
   }))
@@ -88,6 +89,8 @@ const KillmailEntry: React.FC<{
         }
       }
 
+      isActive.current = opacity > 0
+
       set({ opacity, height, paddingBottom, config: { duration } })
     }
 
@@ -101,7 +104,10 @@ const KillmailEntry: React.FC<{
 
   const onMouseEnter = useCallback(() => {
     set({ opacity: 1, config: { duration: animationStepInstant } })
-    focus(id)
+
+    if (isActive.current) {
+      focus(id)
+    }
   }, [focus, id, set])
   const onMouseLeave = useCallback(() => unfocus(id), [unfocus, id])
 
