@@ -1,13 +1,16 @@
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import pickBy from 'lodash/pickBy'
 import create from 'zustand'
 import parseISO from 'date-fns/parseISO'
 import { scaleValue } from '../utils/scaling'
 import { useConnection } from './connection'
+import uniqueId from 'lodash/uniqueId'
 
 export const normalKillmailAgeMs = 45 * 1000
 const trimIntervalMs = 5 * 1000
+const normalCloseCode = 1000
+const reconnectIntervalMs = trimIntervalMs
 
 type WebsocketStatusMessage = {
   action: 'tqStatus'
@@ -108,6 +111,7 @@ export const useKillmailMonitor = (sourceUrl: string): void => {
   const receivePing = useConnection(useCallback(state => state.receivePing, []))
   const trimKillmails = useKillmails(useCallback(state => state.trimKillmails, []))
   const receiveKillmail = useKillmails(useCallback(state => state.receiveKillmail, []))
+  const [connectionRequest, setConnectionRequest] = useState(uniqueId(sourceUrl))
 
   useEffect(() => {
     const interval = setInterval(trimKillmails, trimIntervalMs)
@@ -134,10 +138,15 @@ export const useKillmailMonitor = (sourceUrl: string): void => {
       }
     }
 
-    connection.onclose = (e) => {
-      console.error(e)
+    connection.onclose = ({ code }) => {
+      if (code !== normalCloseCode) {
+        // unless the connection was closed by hook exiting, trigger reconnect by resetting effect param
+        setTimeout(() => {
+          setConnectionRequest(uniqueId(sourceUrl))
+        }, reconnectIntervalMs)
+      }
     }
 
-    return () => connection.close()
-  }, [sourceUrl, receiveKillmail, receivePing])
+    return () => connection.close(normalCloseCode)
+  }, [sourceUrl, receiveKillmail, receivePing, connectionRequest])
 }
