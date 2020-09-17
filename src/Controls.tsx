@@ -7,7 +7,7 @@ import { CameraMode } from './hooks/configuration'
 const Container = styled.div`
   color: ${({ theme }) => theme.text};
   display: grid;
-  grid-template-areas: "fullscreen connection camera regions";
+  grid-template-areas: "fullscreen connection camera sidebar";
   grid-auto-columns: ${({ theme }) => theme.unit}px;
   grid-auto-rows: ${({ theme }) => theme.unit}px;
   gap: ${({ theme }) => theme.gapSize}px;
@@ -22,6 +22,13 @@ const FlatButton = styled.button<{ area: string }>`
   cursor: ${({ onClick }) => onClick ? 'pointer' : 'default'};
   outline: none;
 `
+
+const OnOffIcon: React.FC<FontAwesomeIconProps & { enabled: boolean }> = ({ enabled, ...other }) => {
+  return <span className="fa-layers fa-fw">
+    <FontAwesomeIcon {...other} />
+    {!enabled && <FontAwesomeIcon icon='slash' />}
+  </span>
+}
 
 const FullscreenToggle: React.FC = () => {
   const [fullScreen, setFullScreen] = useState(false)
@@ -43,7 +50,7 @@ const ConnectionStatus: React.FC = () => {
   const connected = useConnection(useCallback(state => state.connected, []))
 
   return <FlatButton type='button' title={connected ? 'Connected to live feed' : 'Disconnected from live feed!'} area='connection'>
-    <FontAwesomeIcon icon={connected ? 'link' : 'unlink'} />
+    <OnOffIcon icon='wifi' enabled={connected} />
   </FlatButton>
 }
 
@@ -76,12 +83,12 @@ const CameraStatus: React.FC = () => {
   </FlatButton>
 }
 
-const RegionNames: React.FC = () => {
-  const enabled = useConfiguration(useCallback(state => state.showRegionNames, []))
-  const toggle = useConfiguration(useCallback(state => state.toggleRegionNames, []))
+const ExtendedTicker: React.FC = () => {
+  const enabled = useConfiguration(useCallback(state => state.extendedTicker, []))
+  const toggle = useConfiguration(useCallback(state => state.toggleExtendedTicker, []))
 
-  return <FlatButton type='button' title={enabled ? 'Region names shown' : 'Region names hidden'} onClick={toggle} area='regions'>
-    <FontAwesomeIcon icon={enabled ? 'list-alt' : 'list'} />
+  return <FlatButton type='button' title={enabled ? 'Sidebar: full information' : 'Sidebar: only the ship'} onClick={toggle} area='sidebar'>
+    <OnOffIcon icon='list' enabled={enabled} />
   </FlatButton>
 }
 
@@ -90,7 +97,7 @@ const Controls: React.FC = () => {
     <FullscreenToggle />
     <ConnectionStatus />
     <CameraStatus />
-    <RegionNames />
+    <ExtendedTicker />
   </Container>
 }
 

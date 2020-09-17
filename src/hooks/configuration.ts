@@ -7,14 +7,14 @@ export enum CameraMode {
 
 type State = {
   cameraMode: CameraMode,
-  showRegionNames: boolean,
+  extendedTicker: boolean,
   setCameraMode: (mode: CameraMode) => void,
-  toggleRegionNames: () => void
+  toggleExtendedTicker: () => void
 }
 
 export const useConfiguration = create<State>(set => ({
   cameraMode: CameraMode.full,
-  showRegionNames: false,
+  extendedTicker: true,
   setCameraMode: (mode) => set({ cameraMode: mode }),
-  toggleRegionNames: () => set(state => ({ showRegionNames: !state.showRegionNames }))
+  toggleExtendedTicker: () => set(state => ({ extendedTicker: !state.extendedTicker }))
 }))

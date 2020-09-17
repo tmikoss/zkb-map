@@ -5,7 +5,7 @@ import { animated, useSpring, OpaqueInterpolation } from 'react-spring'
 import differenceInMilliseconds from 'date-fns/differenceInMilliseconds'
 import { ThemeContext } from 'styled-components'
 import * as THREE from 'three'
-import { useKillmails } from './hooks'
+import { useKillmails, useConfiguration } from './hooks'
 
 const TickerContainer = styled.div`
   overflow: hidden;
@@ -102,6 +102,8 @@ const KillmailEntry: React.FC<{
   const focus = useKillmails(useCallback(state => state.focus, []))
   const unfocus = useKillmails(useCallback(state => state.unfocus, []))
 
+  const extended = useConfiguration(useCallback(state => state.extendedTicker, []))
+
   const onMouseEnter = useCallback(() => {
     set({ opacity: 1, config: { duration: animationStepInstant } })
 
@@ -112,28 +114,28 @@ const KillmailEntry: React.FC<{
   const onMouseLeave = useCallback(() => unfocus(id), [unfocus, id])
 
   return <EntryContainer style={{ opacity, paddingBottom, gridAutoRows: height }} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-    {shipTypeId && <Image
+    <Image
       src={`https://images.evetech.net/types/${shipTypeId}/render`}
       area='ship'
       height={height}
       href={url}
       size={unit}
-    />}
-    {characterId && <Image
+    />
+    {extended && characterId && <Image
       src={`https://images.evetech.net/characters/${characterId}/portrait`}
       area='character'
       height={height}
       href={`https://zkillboard.com/character/${characterId}/`}
       size={unit}
     />}
-    {corporationId && <Image
+    {extended && corporationId && <Image
       src={`https://images.evetech.net/corporations/${corporationId}/logo`}
       area='corporation'
       height={height}
       href={`https://zkillboard.com/corporation/${corporationId}/`}
       size={unit}
     />}
-    {allianceId && <Image
+    {extended && allianceId && <Image
       src={`https://images.evetech.net/alliances/${allianceId}/logo`}
       area='alliance'
       height={height}
