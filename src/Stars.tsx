@@ -6,18 +6,23 @@ import { ThemeContext } from 'styled-components'
 import { useMinViewportSize } from './utils/scaling'
 import { useFrame } from 'react-three-fiber'
 
-const viewportRelativeScale = 75
+const viewportRelativeScale = 70
+const clockWarparound = 60 * 60 * 1000
+const twinkleSpeed = 1
 
 const Stars: React.FC<{
   solarSystems: Record<string, SolarSystem>
 }> = ({ solarSystems }) => {
   const pointsRef = useRef<THREE.Points<THREE.BufferGeometry>>(null)
+  const clockTime = useRef(0)
 
   const theme = useContext(ThemeContext)
 
   const minViewportSize = useMinViewportSize()
 
-  useFrame(() => {
+  useFrame((_ctx, delta) => {
+    clockTime.current = ((clockTime.current + delta) * twinkleSpeed) % clockWarparound
+
     if (!pointsRef.current) {
       return
     }
@@ -36,7 +41,17 @@ const Stars: React.FC<{
 
       positionToArray(solarSystem, positions, index)
 
-      new THREE.Color(theme.colorMinSec).lerp(colorMaxSec, solarSystem.security).toArray(colors, index * 3)
+      const twikleScale = THREE.MathUtils.clamp(
+        -1 + Math.sin(clockTime.current + index) * 2,
+        0,
+        1
+      )
+
+      new THREE.Color(theme.colorMinSec).lerp(
+        colorMaxSec, solarSystem.security
+      ).addScalar(
+        twikleScale
+      ).toArray(colors, index * 3)
 
       scales[index] = systemSize * solarSystem.radius
     }
