@@ -19,7 +19,7 @@ export const effectiveMultiplier = (age: number, scale: number): number => {
 }
 
 const minValueBound = 10_000
-const maxValueBound = 10_000_000_000
+const maxValueBound = 20_000_000_000
 const minValueMultiplier = 1
 const maxValueMultiplier = 10
 

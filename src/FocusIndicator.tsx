@@ -15,6 +15,7 @@ interface TroikaTextObject {
   anchorX: number | 'left' | 'center' | 'right'
   anchorY: number | 'top' | 'top-baseline' | 'middle' | 'bottom-baseline' | 'bottom'
   fontSize: number
+  geometry: THREE.InstancedBufferGeometry
 }
 
 const FocusIndicator: React.FC = () => {

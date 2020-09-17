@@ -49,8 +49,6 @@ const Visuals: React.FC<{
 }> = memo(({ solarSystems, killmails }) => {
   return <Canvas onCreated={({ gl }) => gl.setClearColor(theme.background)}>
     <ThemeContext.Provider value={theme}>
-      <ambientLight />
-
       <Stars solarSystems={solarSystems} />
       <Flares solarSystems={solarSystems} killmails={killmails} />
       <FocusIndicator />

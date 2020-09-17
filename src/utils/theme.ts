@@ -1,6 +1,6 @@
 export const theme = {
   background: '#060606',
-  colorMaxSec: '#cfcfcf',
+  colorMaxSec: '#66A0BC',
   colorMinSec: '#a1a1a1',
   flare: '#E60000',
   text: '#E6E6E6',

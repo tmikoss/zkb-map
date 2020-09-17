@@ -8,7 +8,7 @@ const Effects: React.FC = () => {
   const multisampling = gl.capabilities.maxTextureSize > 8192 ? 8 : 0
 
   return <EffectComposer multisampling={multisampling}>
-    <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.9} intensity={3} />
+    <Bloom luminanceThreshold={0.4} luminanceSmoothing={1} intensity={2} />
     <Noise opacity={0.04} />
     <Vignette eskil={false} offset={0.1} darkness={1.1} />
   </EffectComposer>
