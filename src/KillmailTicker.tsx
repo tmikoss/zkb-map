@@ -26,6 +26,10 @@ const EntryContainer = styled(animated.div)`
 const ImageLink = styled.a<{ area: string }>`
   grid-area: ${({ area }) => area};
   text-decoration: none;
+
+  > img {
+    border-radius: ${({ theme }) => theme.gapSize / 2}px;
+  }
 `
 
 const Image: React.FC<{

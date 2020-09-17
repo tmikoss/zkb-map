@@ -59,7 +59,8 @@ export const useSolarSystems = create<State>(set => ({
         name: n,
         radius: THREE.MathUtils.clamp(r * 100, 0.5, 1.5),
         security: s,
-        regionId: p
+        regionId: p,
+        regionName: regions[p]?.name
       }
       return state
     }, {} as Record<string, SolarSystem>)

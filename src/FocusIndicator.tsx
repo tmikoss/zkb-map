@@ -19,35 +19,33 @@ interface TroikaTextObject {
 
 const FocusIndicator: React.FC = () => {
   const solarSystems = useSolarSystems(useCallback(state => state.systems, []))
-  const regions = useSolarSystems(useCallback(state => state.regions, []))
   const focusedKillmail = useRef<Killmail>()
   const focusedSolarSystem = useRef<SolarSystem>()
-  const focusedRegion = useRef<Region>()
   const theme = useContext(ThemeContext)
   const lineRef = useRef<THREE.Line<THREE.BufferGeometry>>(null)
-  const textRef = useRef<TroikaTextObject>(null)
+  const valueTextRef = useRef<TroikaTextObject>(null)
+  const locationTextRef = useRef<TroikaTextObject>(null)
 
   const { camera } = useThree()
 
   useEffect(() => useKillmails.subscribe(state => {
     focusedKillmail.current = state.focused
     focusedSolarSystem.current = state.focused ? solarSystems[state.focused.solarSystemId] : undefined
-    focusedRegion.current = focusedSolarSystem.current ? regions[focusedSolarSystem.current.regionId] : undefined
   }))
 
   useFrame(() => {
     let positions = new Float32Array(0)
-    let text = ''
+    let valueText = ''
+    let locatioText = ''
     let textX = 0
     let textY = 0
     let textZ = 0
     let textAnchorX: TroikaTextObject['anchorX'] = 'left'
-    let textAnchorY: TroikaTextObject['anchorY'] = 'top'
     let textSize = 0
 
     if (focusedKillmail.current && focusedSolarSystem.current ) {
       const { totalValue } = focusedKillmail.current
-      const { x, y, z, name } = focusedSolarSystem.current
+      const { x, y, z, name, regionName } = focusedSolarSystem.current
       const { x: cameraX, y: cameraY, z: cameraZ } = camera.position
 
       const cameraZOffset = cameraZ - z
@@ -59,9 +57,9 @@ const FocusIndicator: React.FC = () => {
 
       const offsetZ = lineOffset / 10
 
-      const xStart = x + offsetX
-      const yStart = y + offsetY
-      const zStart = z + offsetZ
+      const xStart = x
+      const yStart = y
+      const zStart = z
 
       const xHorizontalStart = xStart + offsetX * 5
       const xHorizontalEnd = xHorizontalStart + offsetX * 5
@@ -69,17 +67,13 @@ const FocusIndicator: React.FC = () => {
       const yHorizontal = yStart + offsetY * 3
       const zHorizontal = zStart + offsetZ * 3
 
-      let locationName = name
-      if (focusedRegion.current) {
-        locationName = `${name}, ${focusedRegion.current.name}`
-      }
+      locatioText = `${name}, ${regionName}`
+      valueText = stringifyPrice(totalValue)
 
-      text = `${stringifyPrice(totalValue)} ${locationName}`
       textX = xHorizontalStart
       textY = yHorizontal
       textZ = zHorizontal
       textAnchorX = offsetX > 0 ? 'left' : 'right'
-      textAnchorY = offsetY > 0 ? 'bottom' : 'top'
       textSize = cameraZOffset / 30
 
       positions = new Float32Array([
@@ -96,13 +90,18 @@ const FocusIndicator: React.FC = () => {
       geometry.attributes.position.needsUpdate = true
     }
 
-    if (textRef.current) {
-      const textObject = textRef.current
-      textObject.text = text
-      textObject.position.set(textX, textY, textZ)
-      textObject.anchorX = textAnchorX
-      textObject.anchorY = textAnchorY
-      textObject.fontSize = textSize
+    if (valueTextRef.current && locationTextRef.current) {
+      const valueTextObject = valueTextRef.current
+      valueTextObject.text = valueText
+      valueTextObject.position.set(textX, textY, textZ)
+      valueTextObject.anchorX = textAnchorX
+      valueTextObject.fontSize = textSize
+
+      const locationTextObject = locationTextRef.current
+      locationTextObject.text = locatioText
+      locationTextObject.position.set(textX, textY, textZ)
+      locationTextObject.anchorX = textAnchorX
+      locationTextObject.fontSize = textSize * 0.75
     }
   })
 
@@ -111,7 +110,8 @@ const FocusIndicator: React.FC = () => {
       <bufferGeometry attach='geometry' />
       <meshBasicMaterial attach='material' color={theme.text} />
     </line>
-    <Text ref={textRef} color={theme.text} fontSize={0} children='' />
+    <Text ref={valueTextRef} color={theme.text} fontSize={0} children='' anchorY='top' />
+    <Text ref={locationTextRef} color={theme.text} fontSize={0} children='' anchorY='bottom'/>
   </group>
 }
 

@@ -7,6 +7,7 @@ interface SolarSystem {
   radius: number
   security: number
   regionId: number
+  regionName?: string
 }
 
 interface Region {
