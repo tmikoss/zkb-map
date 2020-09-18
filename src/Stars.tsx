@@ -8,7 +8,7 @@ import { useFrame } from 'react-three-fiber'
 
 const viewportRelativeScale = 70
 const clockWarparound = 60 * 60 * 1000
-const twinkleSpeed = 1
+const twinkleSpeed = 0.75
 
 const Stars: React.FC<{
   solarSystems: Record<string, SolarSystem>
@@ -21,7 +21,7 @@ const Stars: React.FC<{
   const minViewportSize = useMinViewportSize()
 
   useFrame((_ctx, delta) => {
-    clockTime.current = ((clockTime.current + delta) * twinkleSpeed) % clockWarparound
+    clockTime.current = (clockTime.current + delta) % clockWarparound
 
     if (!pointsRef.current) {
       return
@@ -42,7 +42,7 @@ const Stars: React.FC<{
       positionToArray(solarSystem, positions, index)
 
       const twikleScale = THREE.MathUtils.clamp(
-        -1 + Math.sin(clockTime.current + index) * 2,
+        -1 + Math.sin((clockTime.current + index) * twinkleSpeed) * 2,
         0,
         1
       )
