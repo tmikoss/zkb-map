@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { useConnection, useConfiguration } from './hooks'
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
@@ -33,11 +33,17 @@ const OnOffIcon: React.FC<FontAwesomeIconProps & { enabled: boolean }> = ({ enab
 const FullscreenToggle: React.FC = () => {
   const [fullScreen, setFullScreen] = useState(false)
 
+  useEffect(() => {
+    const listener = () => setFullScreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', listener)
+    return () => document.removeEventListener('fullscreenchange', listener)
+  }, [setFullScreen])
+
   const onClick = () => {
     if (fullScreen) {
-      document.exitFullscreen().then(() => setFullScreen(false))
+      document.exitFullscreen()
     } else {
-      document.getElementById('root')?.requestFullscreen().then(() => setFullScreen(true))
+      document.getElementById('root')?.requestFullscreen()
     }
   }
 
