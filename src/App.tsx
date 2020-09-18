@@ -14,20 +14,21 @@ import sortBy from 'lodash/sortBy'
 import reduce from 'lodash/reduce'
 import Effects from './Effects'
 import FocusIndicator from './FocusIndicator'
+import { rootId } from './utils/constants'
 
 const devMode = process.env.NODE_ENV === 'development'
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
 
-  #root {
+  #${rootId} {
     height: 100vh;
     background: ${({ theme }) => theme.background};
     overflow: hidden;
   }
 
   canvas {
-    outline: 0;
+    outline: none;
   }
 `
 

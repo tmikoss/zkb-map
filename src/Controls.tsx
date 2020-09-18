@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useConnection, useConfiguration } from './hooks'
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
 import { CameraMode } from './hooks/configuration'
+import { rootId } from './utils/constants'
 
 const Container = styled.div`
   color: ${({ theme }) => theme.text};
@@ -43,7 +44,7 @@ const FullscreenToggle: React.FC = () => {
     if (fullScreen) {
       document.exitFullscreen()
     } else {
-      document.getElementById('root')?.requestFullscreen()
+      document.getElementById(rootId)?.requestFullscreen()
     }
   }
 
