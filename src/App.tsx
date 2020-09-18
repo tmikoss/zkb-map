@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback, memo } from 'react'
-import styled, { createGlobalStyle, ThemeProvider, ThemeContext } from 'styled-components'
-import reset from 'styled-reset'
+import styled, { ThemeProvider, ThemeContext } from 'styled-components'
+import { Reset } from 'styled-reset'
 import { Canvas } from 'react-three-fiber'
 import { theme } from './utils/theme'
 import Stars from './Stars'
@@ -14,23 +14,8 @@ import sortBy from 'lodash/sortBy'
 import reduce from 'lodash/reduce'
 import Effects from './Effects'
 import FocusIndicator from './FocusIndicator'
-import { rootId } from './utils/constants'
 
 const devMode = process.env.NODE_ENV === 'development'
-
-const GlobalStyle = createGlobalStyle`
-  ${reset}
-
-  #${rootId} {
-    height: 100vh;
-    background: ${({ theme }) => theme.background};
-    overflow: hidden;
-  }
-
-  canvas {
-    outline: none;
-  }
-`
 
 const TopLeft = styled.div`
   position: absolute;
@@ -44,11 +29,15 @@ const TopRight = styled.div`
   right: 1vmin;
 `
 
+const StyledCanvas = styled(Canvas)`
+  outline: none;
+`
+
 const Visuals: React.FC<{
   solarSystems: Record<string, SolarSystem>
   killmails: React.MutableRefObject<Killmail[]>
 }> = memo(({ solarSystems, killmails }) => {
-  return <Canvas onCreated={({ gl }) => gl.setClearColor(theme.background)}>
+  return <StyledCanvas onCreated={({ gl }) => gl.setClearColor(theme.background)}>
     <ThemeContext.Provider value={theme}>
       <Stars solarSystems={solarSystems} />
       <Flares solarSystems={solarSystems} killmails={killmails} />
@@ -58,7 +47,7 @@ const Visuals: React.FC<{
 
       <Effects />
     </ThemeContext.Provider>
-  </Canvas>
+  </StyledCanvas>
 })
 
 const App: React.FC<{}> = () => {
@@ -85,7 +74,7 @@ const App: React.FC<{}> = () => {
   }, [killmails])
 
   return <ThemeProvider theme={theme}>
-    <GlobalStyle />
+    <Reset />
 
     <Visuals solarSystems={solarSystems} killmails={killmailsRef} />
 
