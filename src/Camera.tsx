@@ -34,7 +34,7 @@ const lookAtPoints = (points: HasPosition[]): THREE.Vector3 => {
   if (geometry.boundingSphere) {
     const { center, radius } = geometry.boundingSphere
 
-    center.z += Math.max(radius * 1.1, minRadius)
+    center.z += Math.max(radius, minRadius)
     return center
   } else {
     return defaultPosition

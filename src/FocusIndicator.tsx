@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useEffect, useRef } from 'react'
+import React, { memo, useCallback, useContext, useEffect, useRef, useMemo } from 'react'
 import { useFrame, useThree } from 'react-three-fiber'
 import { useKillmails, useSolarSystems } from './hooks'
 import * as THREE from 'three'
@@ -7,7 +7,6 @@ import { Text } from 'drei'
 import { stringifyPrice } from './utils/formatting'
 
 type TSThinksThisIsSvgLineTodoFix = any
-
 
 interface TroikaTextObject {
   text: string
@@ -33,6 +32,10 @@ const FocusIndicator: React.FC = () => {
     focusedKillmail.current = state.focused
     focusedSolarSystem.current = state.focused ? solarSystems[state.focused.solarSystemId] : undefined
   }))
+
+  const textMaterial = useMemo(() => {
+    return new THREE.MeshBasicMaterial({ color: theme.text, depthTest: false })
+  }, [theme.text])
 
   useFrame(() => {
     let positions = new Float32Array(0)
@@ -89,6 +92,8 @@ const FocusIndicator: React.FC = () => {
 
       geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
       geometry.attributes.position.needsUpdate = true
+
+      lineRef.current.material = textMaterial
     }
 
     if (valueTextRef.current && locationTextRef.current) {
@@ -109,10 +114,9 @@ const FocusIndicator: React.FC = () => {
   return <group>
     <line ref={lineRef as TSThinksThisIsSvgLineTodoFix}>
       <bufferGeometry attach='geometry' />
-      <meshBasicMaterial attach='material' color={theme.text} />
     </line>
-    <Text ref={valueTextRef} color={theme.text} fontSize={0} children='' anchorY='top' />
-    <Text ref={locationTextRef} color={theme.text} fontSize={0} children='' anchorY='bottom'/>
+    <Text ref={valueTextRef} material={textMaterial} fontSize={0} children='' anchorY='top' />
+    <Text ref={locationTextRef} material={textMaterial} fontSize={0} children='' anchorY='bottom'/>
   </group>
 }
 
