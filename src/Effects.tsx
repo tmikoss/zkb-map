@@ -1,17 +1,21 @@
 import React, { memo} from 'react'
-import { EffectComposer, Bloom, Noise, Vignette } from 'react-postprocessing'
+import { EffectComposer, Bloom, Noise, Vignette, SMAA } from 'react-postprocessing'
 import { useThree } from 'react-three-fiber'
+import compact from 'lodash/compact'
 
 const Effects: React.FC = () => {
   const { gl } = useThree()
-  // Multisampling kills WebGL renderer on low power devices. This seems to be reasonable way of detection.
-  const multisampling = gl.capabilities.maxTextureSize > 8192 ? 8 : 0
+  const { isWebGL2, maxTextureSize } = gl.capabilities
+  const enableMultisampling = isWebGL2 && maxTextureSize > 8192
 
-  return <EffectComposer multisampling={multisampling}>
-    <Bloom luminanceThreshold={0.4} luminanceSmoothing={1} intensity={2} />
-    <Noise opacity={0.04} />
-    <Vignette eskil={false} offset={0.1} darkness={1.1} />
-  </EffectComposer>
+  const effects = compact([
+    isWebGL2 && <Bloom luminanceThreshold={0.4} luminanceSmoothing={1} intensity={2} key='bloom' />,
+    isWebGL2 && <Noise opacity={0.04} key='noise' />,
+    <Vignette eskil={false} offset={0.1} darkness={1.1} key='vignette' />,
+    !enableMultisampling && <SMAA key='smaa' />
+  ])
+
+  return <EffectComposer multisampling={enableMultisampling ? 8 : 0}>{effects}</EffectComposer>
 }
 
 export default memo(Effects)
