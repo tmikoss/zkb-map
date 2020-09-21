@@ -4,13 +4,17 @@ import App from './App'
 import './utils/fontawesome'
 import { rootId } from './utils/constants'
 
-const render = (Component: React.ComponentType<{}>)=> {
-  ReactDOM.render(
-    <React.StrictMode>
-      <Component />
-    </React.StrictMode>,
-    document.getElementById(rootId)
-  )
+const render = (Component: React.ComponentType<any>)=> {
+  const container = document.getElementById(rootId)
+
+  if (container) {
+    ReactDOM.render(
+      <React.StrictMode>
+        <Component {...container.dataset} />
+      </React.StrictMode>,
+      container
+    )
+  }
 }
 
 render(App)

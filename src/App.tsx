@@ -1,8 +1,7 @@
 import React, { useRef, useEffect, useCallback, memo } from 'react'
 import styled, { ThemeProvider, ThemeContext } from 'styled-components'
-import { Reset } from 'styled-reset'
 import { Canvas } from 'react-three-fiber'
-import { theme } from './utils/theme'
+import { theme, Theme } from './utils/theme'
 import Stars from './Stars'
 import Flares from './Flares'
 import KillmailTicker from './KillmailTicker'
@@ -36,7 +35,8 @@ const StyledCanvas = styled(Canvas)`
 const Visuals: React.FC<{
   solarSystems: Record<string, SolarSystem>
   killmails: React.MutableRefObject<Killmail[]>
-}> = memo(({ solarSystems, killmails }) => {
+  theme: Theme
+}> = memo(({ solarSystems, killmails, theme }) => {
   return <StyledCanvas onCreated={({ gl }) => gl.setClearColor(theme.background)}>
     <ThemeContext.Provider value={theme}>
       <Stars solarSystems={solarSystems} />
@@ -50,9 +50,14 @@ const Visuals: React.FC<{
   </StyledCanvas>
 })
 
-const App: React.FC<{}> = () => {
-  useKillmailMonitor('wss://zkillboard.com/websocket/')
-  useSolarSystemData(process.env.PUBLIC_URL + '/data/universe.json')
+export interface AppProps {
+  websocketUrl: string
+  universeUrl: string
+}
+
+const App: React.FC<AppProps> = ({ websocketUrl, universeUrl }) => {
+  useKillmailMonitor(websocketUrl)
+  useSolarSystemData(universeUrl)
   useConnectionStatus()
 
   const killmailsRef = useRef<Killmail[]>([])
@@ -74,9 +79,7 @@ const App: React.FC<{}> = () => {
   }, [killmails])
 
   return <ThemeProvider theme={theme}>
-    <Reset />
-
-    <Visuals solarSystems={solarSystems} killmails={killmailsRef} />
+    <Visuals solarSystems={solarSystems} killmails={killmailsRef} theme={theme} />
 
     <TopLeft>
       <KillmailTicker killmails={killmails} />
