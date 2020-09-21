@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.js": "https://tmikoss.github.io/zkb-map/static/js/main.76b291f9.js",
-    "main.js.map": "https://tmikoss.github.io/zkb-map/static/js/main.76b291f9.js.map",
+    "main.js": "https://tmikoss.github.io/zkb-map/static/js/main.3cc450f2.js",
+    "main.js.map": "https://tmikoss.github.io/zkb-map/static/js/main.3cc450f2.js.map",
     "index.html": "https://tmikoss.github.io/zkb-map/index.html",
-    "precache-manifest.671d8d8f82615a68199aa5d27dd06a22.js": "https://tmikoss.github.io/zkb-map/precache-manifest.671d8d8f82615a68199aa5d27dd06a22.js",
+    "precache-manifest.7631907049d362793a7ce051b65beaa0.js": "https://tmikoss.github.io/zkb-map/precache-manifest.7631907049d362793a7ce051b65beaa0.js",
     "service-worker.js": "https://tmikoss.github.io/zkb-map/service-worker.js",
-    "static/js/main.76b291f9.js.LICENSE.txt": "https://tmikoss.github.io/zkb-map/static/js/main.76b291f9.js.LICENSE.txt",
+    "static/js/main.3cc450f2.js.LICENSE.txt": "https://tmikoss.github.io/zkb-map/static/js/main.3cc450f2.js.LICENSE.txt",
     "static/media/glow.png": "https://tmikoss.github.io/zkb-map/static/media/glow.3b6b0c75.png"
   },
   "entrypoints": [
-    "static/js/main.76b291f9.js"
+    "static/js/main.3cc450f2.js"
   ]
 }
