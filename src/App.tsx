@@ -37,7 +37,7 @@ const Visuals: React.FC<{
   killmails: React.MutableRefObject<Killmail[]>
   theme: Theme
 }> = memo(({ solarSystems, killmails, theme }) => {
-  return <StyledCanvas onCreated={({ gl }) => gl.setClearColor(theme.background)}>
+  return <StyledCanvas onCreated={({ gl }) => gl.setClearColor(theme.background)} colorManagement={false}>
     <ThemeContext.Provider value={theme}>
       <Stars solarSystems={solarSystems} />
       <Flares solarSystems={solarSystems} killmails={killmails} />
