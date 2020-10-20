@@ -6,6 +6,10 @@ import { ThemeContext } from 'styled-components'
 import { Text } from '@react-three/drei/Text'
 import { stringifyPrice } from './utils/formatting'
 
+const CALCULATED_EVERY_FRAME = 0
+const OUTLINE_MULTIPLIER = 0.15
+const LOCATION_TEXT_SCALE = 0.75
+
 type TSThinksThisIsSvgLineTodoFix = any
 
 interface TroikaTextObject {
@@ -15,6 +19,7 @@ interface TroikaTextObject {
   anchorY: number | 'top' | 'top-baseline' | 'middle' | 'bottom-baseline' | 'bottom'
   fontSize: number
   geometry: THREE.InstancedBufferGeometry
+  outlineWidth: number
 }
 
 const FocusIndicator: React.FC = () => {
@@ -102,12 +107,14 @@ const FocusIndicator: React.FC = () => {
       valueTextObject.position.set(textX, textY, textZ)
       valueTextObject.anchorX = textAnchorX
       valueTextObject.fontSize = textSize
+      valueTextObject.outlineWidth = textSize * OUTLINE_MULTIPLIER
 
       const locationTextObject = locationTextRef.current
       locationTextObject.text = locatioText
       locationTextObject.position.set(textX, textY, textZ)
       locationTextObject.anchorX = textAnchorX
-      locationTextObject.fontSize = textSize * 0.75
+      locationTextObject.fontSize = textSize * LOCATION_TEXT_SCALE
+      locationTextObject.outlineWidth = textSize * OUTLINE_MULTIPLIER * LOCATION_TEXT_SCALE
     }
   })
 
@@ -115,8 +122,24 @@ const FocusIndicator: React.FC = () => {
     <line ref={lineRef as TSThinksThisIsSvgLineTodoFix}>
       <bufferGeometry attach='geometry' />
     </line>
-    <Text ref={valueTextRef} material={textMaterial} fontSize={0} children='' anchorY='top' />
-    <Text ref={locationTextRef} material={textMaterial} fontSize={0} children='' anchorY='bottom'/>
+    <Text
+      ref={valueTextRef}
+      material={textMaterial}
+      fontSize={CALCULATED_EVERY_FRAME}
+      children=''
+      anchorY='top'
+      outlineWidth={CALCULATED_EVERY_FRAME}
+      outlineColor={theme.background}
+    />
+    <Text
+      ref={locationTextRef}
+      material={textMaterial}
+      fontSize={CALCULATED_EVERY_FRAME}
+      children=''
+      anchorY='bottom'
+      outlineWidth={CALCULATED_EVERY_FRAME}
+      outlineColor={theme.background}
+    />
   </group>
 }
 
