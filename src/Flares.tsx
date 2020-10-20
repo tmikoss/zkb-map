@@ -7,6 +7,8 @@ import { buildAttributes, setAttributes, positionToArray } from './utils/geometr
 import Points from './Points'
 import { ThemeContext } from 'styled-components'
 
+const Z_OFFSET_TO_PREVENT_CLIPPING = 0.05
+
 const Flares: React.FC<{
   solarSystems: Record<string, SolarSystem>
   killmails: React.MutableRefObject<Killmail[]>
@@ -38,7 +40,7 @@ const Flares: React.FC<{
       const age = differenceInMilliseconds(now, receivedAt)
       scales[index] = baseFlareSize * effectiveMultiplier(age, scaledValue)
 
-      positionToArray(solarSystem, positions, index)
+      positionToArray(solarSystem, positions, index, Z_OFFSET_TO_PREVENT_CLIPPING)
 
       colorFlare.toArray(colors, index * 3)
     }

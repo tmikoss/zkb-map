@@ -23,10 +23,10 @@ export interface HasPosition {
 }
 
 const tempVector = new THREE.Vector3()
-export const positionToArray = ({ x, y, z }: HasPosition, target: Float32Array, index: number): void => {
+export const positionToArray = ({ x, y, z }: HasPosition, target: Float32Array, index: number, zOffset: number = 0): void => {
   tempVector.x = x
   tempVector.y = y
-  tempVector.z = z
+  tempVector.z = z + zOffset
   tempVector.toArray(target, index * 3)
 }
 
