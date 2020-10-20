@@ -7,7 +7,7 @@ import { buildAttributes, setAttributes, positionToArray } from './utils/geometr
 import Points from './Points'
 import { ThemeContext } from 'styled-components'
 
-const Z_OFFSET_TO_PREVENT_CLIPPING = 0.05
+const Z_OFFSET_TO_PREVENT_CLIPPING = 0.1
 
 const Flares: React.FC<{
   solarSystems: Record<string, SolarSystem>
