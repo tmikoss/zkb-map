@@ -36,7 +36,7 @@ const uniforms = {
 }
 
 const Points = forwardRef<THREE.Points<THREE.BufferGeometry>>((props, ref) => <points ref={ref} {...props} >
-  <bufferGeometry attach='geometry' />
+  <bufferGeometry />
   <shaderMaterial
     uniforms={uniforms}
     vertexShader={VERTEX_SHADER}
@@ -44,7 +44,6 @@ const Points = forwardRef<THREE.Points<THREE.BufferGeometry>>((props, ref) => <p
     blending={THREE.AdditiveBlending}
     depthTest={false}
     transparent={true}
-    attach='material'
   />
 </points>)
 

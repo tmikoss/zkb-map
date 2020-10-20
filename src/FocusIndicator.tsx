@@ -120,7 +120,7 @@ const FocusIndicator: React.FC = () => {
 
   return <group>
     <line ref={lineRef as TSThinksThisIsSvgLineTodoFix}>
-      <bufferGeometry attach='geometry' />
+      <bufferGeometry />
     </line>
     <Text
       ref={valueTextRef}
