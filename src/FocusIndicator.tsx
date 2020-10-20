@@ -3,7 +3,7 @@ import { useFrame, useThree } from 'react-three-fiber'
 import { useKillmails, useSolarSystems } from './hooks'
 import * as THREE from 'three'
 import { ThemeContext } from 'styled-components'
-import { Text } from 'drei'
+import { Text } from '@react-three/drei'
 import { stringifyPrice } from './utils/formatting'
 
 type TSThinksThisIsSvgLineTodoFix = any

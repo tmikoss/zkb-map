@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import styled from 'styled-components'
 import { useSolarSystems, useKillmails } from './hooks'
-import { Stats } from 'drei'
+import { Stats } from '@react-three/drei'
 import random from 'lodash/random'
 import sample from 'lodash/sample'
 import { scaleValue } from './utils/scaling'

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react'
-import { PerspectiveCamera } from 'drei'
+import { PerspectiveCamera } from '@react-three/drei'
 import * as THREE from 'three'
 import { CameraMode } from './hooks/configuration'
 import { positionToArray, HasPosition } from './utils/geometry'
