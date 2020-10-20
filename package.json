@@ -18,7 +18,7 @@
     "@types/styled-components": "^5.1.2",
     "@types/webpack-env": "^1.15.2",
     "date-fns": "^2.15.0",
-    "drei": "^1.4.0",
+    "drei": "^1.5.7",
     "lodash": "^4.17.20",
     "postprocessing": "^6.17.3",
     "react": "^16.13.1",
