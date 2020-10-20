@@ -1295,6 +1295,14 @@
     utility-types "^3.10.0"
     zustand "^3.0.3"
 
+"@react-three/postprocessing@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@react-three/postprocessing/-/postprocessing-1.4.1.tgz#bc55edac6dfb6b268b4de2fcc8fd179b582479e8"
+  integrity sha512-i7jM9GFP6wGlPg3iKueDU+HrnRkSf+zhJMHc5E9Ku5+nZjGdeM4Dk1aUkb+AhnloGkcpiB5LBmqPpdvVWRgSCQ==
+  dependencies:
+    postprocessing "^6.17.1"
+    react-merge-refs "^1.1.0"
+
 "@sheerun/mutationobserver-shim@^0.3.2":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@sheerun/mutationobserver-shim/-/mutationobserver-shim-0.3.3.tgz#5405ee8e444ed212db44e79351f0c70a582aae25"
@@ -4528,9 +4536,9 @@ fast-deep-equal@^2.0.1:
   integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
 
 fast-deep-equal@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.1.tgz#545145077c501491e33b15ec408c294376e94ae4"
-  integrity sha512-8UEa58QDLauDNfpbrX55Q9jrGHThw2ZMdOky5Gl1CDtVeJDPVrG4Jxx1N8jw2gkWaff5UUuX1KJd+9zGe2B+ZA==
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
+  integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
 
 fast-glob@^2.0.2:
   version "2.2.7"
@@ -7392,15 +7400,7 @@ onetime@^5.1.0:
   dependencies:
     mimic-fn "^2.1.0"
 
-open@^7.0.2:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/open/-/open-7.0.3.tgz#db551a1af9c7ab4c7af664139930826138531c48"
-  integrity sha512-sP2ru2v0P290WFfv49Ap8MF6PkzGNnGlAwHweB4WR4mr5d2d0woiCluUeJ218w7/+PmoBy9JmYgD5A4mLcWOFA==
-  dependencies:
-    is-docker "^2.0.0"
-    is-wsl "^2.1.1"
-
-open@^7.1.0:
+open@^7.0.2, open@^7.1.0:
   version "7.2.1"
   resolved "https://registry.yarnpkg.com/open/-/open-7.2.1.tgz#07b0ade11a43f2a8ce718480bdf3d7563a095195"
   integrity sha512-xbYCJib4spUdmcs0g/2mK1nKo/jO2T7INClWd/beL7PFkXRWgr8B23ssDHX/USPn2M2IjDR5UdpYs6I67SnTSA==
@@ -8480,10 +8480,10 @@ postcss@^7, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.16, po
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
-postprocessing@^6.17.3:
-  version "6.17.3"
-  resolved "https://registry.yarnpkg.com/postprocessing/-/postprocessing-6.17.3.tgz#78eff14a2e326245943e00e9d3ae02d2df203bc8"
-  integrity sha512-C7ZSFs6PrBx7/fkRbIJEpn/ris/1G6EYvWsr/Ipp24/KGHsLqHY8E+kWxYx2OFfvnvLCsN5kX5c8FxUjIPUSDQ==
+postprocessing@^6.17.1:
+  version "6.17.4"
+  resolved "https://registry.yarnpkg.com/postprocessing/-/postprocessing-6.17.4.tgz#015c1e8c8d04243875b0da4b52e9f3a407e2d3ec"
+  integrity sha512-rW22ucag46rPfOMKfHjEsUszVYrdvUd3q64muEq8cEqFgQRivmGS43Eijsho16CBigIF7CTb6yxHj5YtC+XCAQ==
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -8794,13 +8794,6 @@ react-merge-refs@^1.0.0, react-merge-refs@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-merge-refs/-/react-merge-refs-1.1.0.tgz#73d88b892c6c68cbb7a66e0800faa374f4c38b06"
   integrity sha512-alTKsjEL0dKH/ru1Iyn7vliS2QRcBp9zZPGoWxUOvRGWPUYgjo+V01is7p04It6KhgrzhJGnIj9GgX8W4bZoCQ==
 
-react-postprocessing@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/react-postprocessing/-/react-postprocessing-1.3.2.tgz#4ba876d0b7245ce606be204ae59fffcb5f11386e"
-  integrity sha512-cY5rIr1S0f3/7ra69aqtnd5lPyaR/90CK3iWjXF1CZSs5d3WnVU3HYIuPVSrJgLBR456WjHSStP2DpR/vWidag==
-  dependencies:
-    react-merge-refs "^1.1.0"
-
 react-promise-suspense@^0.3.2:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/react-promise-suspense/-/react-promise-suspense-0.3.3.tgz#b085c7e0ac22b85fd3d605b1c4f181cda4310bc9"
@@ -8886,7 +8879,7 @@ react-spring@^8.0.27:
     "@babel/runtime" "^7.3.1"
     prop-types "^15.5.8"
 
-react-three-fiber@^4.2.20:
+react-three-fiber@^4.0.0:
   version "4.2.21"
   resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-4.2.21.tgz#bb335fee090a44f2ba48762a8c42308c31f4238f"
   integrity sha512-lbopEkL36cbAaG/y+iEGT1EFbVaVZBrOe2XGt2+HxsCL8AeWWiQQERo1HYiiqFc4p6DuoNq1hhOSxr1TKQjXuQ==
@@ -10251,10 +10244,10 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three@^0.119.1:
-  version "0.119.1"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.119.1.tgz#9d979a082c4cd9622af8e3498a8dfa026a619332"
-  integrity sha512-GHyh/RiUfQ5VTiWIVRRTANYoXc1PFB1y+jDVRTb649nif1uX1F06PT1TKU3k2+F/MN4UJ3PWvQB53fY2OqKqKw==
+three@^0.121.1:
+  version "0.121.1"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.121.1.tgz#fda39cf4701d02be9c3be5c27ccea24b7a1ea59b"
+  integrity sha512-+rYhNpW5W1aBdLkPQDld/GA4Sj/uOKJJKVpCAZUbpk/HZEiYRUlPt8+s+9nmxRglWmRHdBa3ERvUwqg4nmoA5w==
 
 throat@^4.0.0:
   version "4.1.0"
@@ -11237,6 +11230,6 @@ yargs@^15.4.1:
     yargs-parser "^18.1.2"
 
 zustand@^3.0.3, zustand@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/zustand/-/zustand-3.1.2.tgz#0dcb9197e38d82746ae2a22097d80009cd0efa4f"
-  integrity sha512-b9pbR29m/KYicTE33dF+SPQ3DoDnMT4ZHOS00QnzZ/SWArK7rn/3EVeSWWk3G2A9bexEHqj75Ob2w+GN547o/w==
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-3.1.3.tgz#33df7f56ec11b3003458b60606addc94225b282c"
+  integrity sha512-Otuzh3r0GsatvsUWeXEwdYjZEw1TItWcAXwDGEHdXE4/k6WbAdVDxC21t/Poq4ZMB+2VaQNKICWu7eCBUJ65tQ==
