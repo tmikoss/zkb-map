@@ -1,0 +1,56 @@
+#!/bin/bash -e
+
+TAG=$1
+
+if [ -z $TAG ]; then
+  echo "usage: $0 <git tag>"
+  exit 1
+fi
+
+if GIT_DIR=.git git show-ref --tags | egrep -q "refs/tags/$TAG$"
+then
+  echo "Tag $TAG ok"
+else
+  echo "Tag $TAG not found"
+  exit 1
+fi
+
+REPO_DIR=`pwd`
+ZKB_DIR="$REPO_DIR/../zKillboard"
+
+if [ -d "$ZKB_DIR/.git" ]; then
+  echo "zKillboard git repo found where expected"
+else
+  echo "zKillboard git repo not found at $ZKB_DIR"
+  exit 1
+fi
+
+rm -rf $REPO_DIR/build-temp
+git clone $REPO_DIR/.git $REPO_DIR/build-temp
+
+cd $REPO_DIR/build-temp
+
+git checkout $TAG
+
+yarn install
+
+yarn run build
+
+MAIN_FILE=$(find $REPO_DIR/build-temp/build/static/js -type f -iname "main.*.js")
+MAIN_FILENAME=$(basename $MAIN_FILE)
+
+echo $MAIN_FILENAME
+
+cd $ZKB_DIR
+
+git checkout -B map-update-$TAG -t upstream/master
+
+rm -r $ZKB_DIR/public/map/static
+rm -r $ZKB_DIR/public/map/data
+
+cp -r $REPO_DIR/build-temp/build/static $ZKB_DIR/public/map
+cp -r $REPO_DIR/build-temp/build/data $ZKB_DIR/public/map
+
+rm -rf $REPO_DIR/build-temp
+
+sed -i '' "s/main.*.js/$MAIN_FILENAME/" $ZKB_DIR/templates/map.html

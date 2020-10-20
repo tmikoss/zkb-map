@@ -38,7 +38,7 @@
     "sde2json": "node ./sde2json.js",
     "predeploy": "PUBLIC_URL=https://tmikoss.github.io/zkb-map yarn run build",
     "deploy": "gh-pages -d build",
-    "build-zkb": "PUBLIC_URL=https://zkillboard.com/map yarn run build",
+    "build-zkb": "bin/build-zkb",
     "analyze": "yarn run build && source-map-explorer build/static/js/*.js --html > bundle-analysis.html"
   },
   "eslintConfig": {
