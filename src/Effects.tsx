@@ -4,9 +4,9 @@ import compact from 'lodash/compact'
 import { useDetectGPU } from '@react-three/drei/useDetectGPU'
 
 const Effects: React.FC = () => {
-  const { tier } = useDetectGPU()
+  const { tier, isMobile } = useDetectGPU()
 
-  if (tier === "0") {
+  if (isMobile || tier === "0") {
     return null
   }
 
