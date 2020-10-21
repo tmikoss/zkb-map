@@ -43,7 +43,7 @@ echo $MAIN_FILENAME
 
 cd $ZKB_DIR
 
-git checkout -B map-update-$TAG -t upstream/master
+git checkout -B map-update-$TAG upstream/master
 
 rm -r $ZKB_DIR/public/map/static
 rm -r $ZKB_DIR/public/map/data
